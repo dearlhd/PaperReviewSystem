@@ -1,0 +1,62 @@
+.mybutton
+{
+	border: none;
+    outline: none;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1em;
+    font-weight: 400;
+    text-transform: uppercase;
+    padding: 2px 0 0 1px;
+    width: 120px;
+    height: 45px;
+    display: inline-block;
+    background: #1fadc5;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    -webkit-appearance: none;
+	float:right;
+	opacity: 0.75;
+	margin-left: 1em;
+}
+
+.mybutton:hover
+{
+	background: #FF6100;
+}
+
+.mytext
+{
+	float: left;
+	margin-top: 10px;
+}
+
+.myinput
+{
+	margin-top: 10px;
+	width: 100%;
+	font-weight: 400;
+}
+
+.myheadText
+{
+	float: left;
+	font-size: 50px;
+}
+
+.myheadLabel
+{
+    color: #1fadc5;
+    font-size: 18px;
+    font-weight: 400;
+    text-transform: uppercase;
+    padding: 2px 0 0 1px;
+    width: 120px;
+    height: 45px;
+    display: inline-block;
+    margin: 0 auto;
+    margin-top: 15px;
+	float:right;
+	margin-left: 1em;
+}
