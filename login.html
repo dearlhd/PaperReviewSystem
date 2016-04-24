@@ -147,8 +147,16 @@
             type: "GET",
             success: function (data) {
                 var obj = eval(data);
-                if (obj.User[0].name == uname) {
+
+                if (jQuery.isEmptyObject(obj)) {
+                    sweetAlert("", "用户名或密码错误", "error");
+                    return false;
+                }
+
+                else {
                     document.cookie = "name="+uname;
+                    document.cookie = "role="+obj.User[0].role;
+                    alert(document.cookie);
 
                     if(obj.User[0].role == "writer") {
                         window.location.href="contributor.html";
@@ -159,6 +167,7 @@
                     else if ((obj.User[0].role == "chairman")) {
                         window.location.href="chairman.html";
                     }
+
 
                 }
             }
