@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>404</title>
+<title>contributor</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
@@ -12,13 +12,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href="css/style.css" rel='stylesheet' type='text/css' />	
 <link href="css/myCss.css" rel='stylesheet' type='text/css' />
 <script src="js/jquery.min.js"> </script>
-<!--webfonts-->
- <link href='http://fonts.useso.com/css?family=Raleway:400,100,200,300,500,600,700|Cinzel+Decorative:400,700' rel='stylesheet' type='text/css'>
-<!--//webfonts-->
 
 <script>
 	var cnt = 0;
 	var username;
+	var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
 
 	function display_alert()
   	{
@@ -36,16 +34,26 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   		alert();
   	}
 
+  	function AdvicePaperClick(obj)
+  	{
+  		//window.open("viewAdvice.html?pid=" + obj, "", "top=150, left=300, width=600, height=400");
+  	}
+
   	function SubmitPaperClick(){
   		//alert($("#paper").html());
   		var title = $("#title").val();
   		var unit = $("#unit").val();
   		var address = $("#address").val();
   		var summary = $("#summary").val();
-  		var content = $("#content").val();
+  		//var content = $("#content").val();
+  		var keywords = $("#keywords").val();
   		var subimttime;
+  		var myDate = new Date();
+  		submittime = myDate.getFullYear() + "-" + myDate.getMonth() + "-" + myDate.getDate(); 
+  		//alert(submittime);
+
   		var status = "firstTrial";
-  		if ((title != null) && (unit != null) && (address != null) && (summary != null) && (context != null))//not null
+  		if ((title != null) && (unit != null) && (address != null) && (summary != null) && (keywords != null) && (content != null))//not null
   		{
   			var paperInfo={
   					////////////////////////
@@ -54,18 +62,63 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   				"unit" : unit,
   				"address" : address,
   				"summary" : summary,
-  				"content" : content,
-  				"subimttime" : subimttime,
-  				"statut" :　status
+  				"submittime" : submittime,
+  				"status" :　status
   			};
+  //			alert(username);
+  			alert(submittime);
   			$.ajax({
-  				url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/",
+  				url: myurl + "Paper/",
   				contentType: "application/json",
   				type: "POST",
   				data: JSON.stringify(paperInfo),
   				success: function(msg){
-  					alert("submit successful");
-  					//////////////////////////to MyPaperi
+  				//	alert("submit successful");
+  					//////////////////////////herf paper
+  					//do paperfile 
+  					var obj = eval(msg);
+  					var paperId = obj.id;
+  					alert(paperId);
+
+
+  					var files = $(":file")[0].files;
+  					//alert(files);
+      				var formData = new FormData();
+      			    formData.append("file", files[0]);
+      				$.ajax({
+            			url: myurl + "Paper/" + paperId,
+          		  		type: "POST",
+            			data: formData,
+         		   		contentType: false,
+           				processData: false,
+            			success: function(data){
+                			console.log(data);
+                			alert("add file");
+            			}	
+        			});
+      				//do keywords
+
+      				var keylist = keywords.split(";");
+      				alert(keylist.length);
+      				
+      				for (var i = 0; i < keylist.length; ++i){
+      					
+      					var keywordsInfo={
+      						"word" : keylist[i],
+      						"match" : {"id" : paperId, "type" : "Paper"}
+      					};
+
+      					$.ajax({
+      						url: myurl + "Keywords/",
+      						contentType: "application/json",
+  							type: "POST",
+  							data: JSON.stringify(keywordsInfo),
+  							success: function(msg){
+  								alert("add keywords" + keylist[i]);
+  							}
+      					});
+      				
+      				}
   				}
   			});
   		}
@@ -74,16 +127,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
   	function DissertClick(){
 
-  		/*$("#my_contact").html("<h1 class='myheadText'>Plllaper</h1><h1 class='myheadLabel'>Modllllify</h1><h1 class='myheadLabel'>Advillce</h1><h1 class='myheadLabel'>Statut</h1>");
+  		/*$("#my_contact").html("<h1 class='myheadText'>Plllaper</h1><h1 class='myheadLabel'>Modllllify</h1><h1 class='myheadLabel'>Advillce</h1><h1 class='myheadLabel'>Status</h1>");
   		alert($("#my_contact").html());*/
   		$("#my_contact").html("" +
   			"<div class='container' id='paper'>" + 
   				"<input class='myinput' id='title' placeholder='标题'>" + 
   				"<input class='myinput' id='unit' placeholder='作者单位'>" + 
   				"<input class='myinput' id='address' placeholder='通讯地址'>" + 
-  				"<input class='myinput' id='summary' placeholder='摘要'>" + 
-  				"<input class='myinput' id='keyword' placeholder='关键词'>" + 
-  				"<input class='myinput' id='content' placeholder='正文'>" + 
+  				"<input class='myinput' id='keywords' placeholder='关键词(用分号隔开)'>" +
+  				"<textarea class='myinput' id='summary' placeholder='摘要'></textarea>" +  
+  				"<input type='file' class='myinput' style='width:40%' name='file' id='content' placeholder='上传正文pdf'>" + 
   				"<input type='button' class='mybutton' style='float:none;'' value='提交'' onclick='SubmitPaperClick();''>" +
   			"</div>"
   		);
@@ -92,22 +145,108 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
   	function MyPaperClick(){
   		//get username
+  		var layout = "";
 
-  		/*$.ajax({
-  				url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.author=" + username,
+  		layout = 
+  			"<div class='container'>" +
+				"<div class='contact-main'>" + 
+					"<h1 class='myheadText'>Paper</h1>" +
+					"<h1 class='myheadLabel'>Modify</h1>" +
+					"<h1 class='myheadLabel'>Advice</h1>" +
+					"<h1 class='myheadLabel'>Status</h1>" +
+				"</div>" +
+			"</div>";
+
+		$("#my_contact").html(layout);
+
+  		$.ajax({
+  				url: myurl + "Paper/?Paper.author=" + username,
   				//contentType: "application/json",
   				type: "GET",
   				success: function(msg){
+  					var obj = eval(msg);
+  					//for (var i = 0; i < obj.Paper.length; ++i){
+  					for (var i = 0; i < 1; ++i){
+  						cnt++;
+  						
 
-  				}
+  					//	alert(obj.Paper[i].id + "  " + obj.Paper[i].title);
 
-  			});*/
+  						var PaperMsg = "";
+  						PaperMsg += ("作者: " + obj.Paper[i].author + "  提交时间: " + obj.Paper[i].submittime + "  关键词: ");
+  						alert(PaperMsg);
+  						
+  						$.ajax({
+  							//url: myurl + "Keywords/?Keywords.match.id=" + obj.Paper[i].id,
+  							url: myurl + "Keywords/?Keywords.match.id=1461484961118",
+  							type : "GET",
+  							success: function(_msg){
+  								//console.log(_msg);
+  								var _obj = eval(_msg);
+  								var k = _obj.Keywords.length;
+
+  								for (var j = 0; j < k; ++j) {
+  									alert("yes");
+  								}
+
+  								 
+  								 	//PaperMsg += (_obj.Keywords[j].word + "  ");
+  								 	//alert(_obj.Keywords[j].word);
+  							}
+  						});
+
+
+  						layout = "";
+  						if (cnt % 2 == 1)
+  							layout += "<div class='container' style='background: #e9e9e9;'>";
+  						else layout += "<div class='container'>";
+						layout +=
+							("<div>" +
+								"<div class='mytext'>" +
+									"<h1 class='myTitleText' value='Paper' onclick='ShowPaperClick(" + obj.Paper[i].title + ")'>Paper</h1>" +
+									"<h1 class='myMsgText'>" + PaperMsg + "</h1>" + 
+								"</div>"　+
+									"<input type='button' class='mybutton' value='Modify' onclick='ModifyPaperClick(" + obj.Paper[i].id + ")'>" +
+									"<input type='button' class='mybutton' value='Advice' onclick='AdvicePaperClick(" + obj.Paper[i].id + ")'>" +
+									"<input class='myStatusText' value='" + obj.Paper[i].status + "' disabled='disabled'>" +						
+							"</div>" +
+						"</div>");
+
+						$("#my_contact").append(layout);
+  					}
+  				}	
+
+  			});
+
+
+
+
+  		//	alert("delete begin");
+  	/*	$.ajax({
+            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/1461470431419",
+            type: "DELETE",
+            success: function () {
+            	alert("yes");
+            }
+        });*/
+     /*   $.ajax({
+            url: myurl + "Paper/" + "1461478162085"	,
+            type: "GET",
+            success: function (data) {
+                alert("get file:");
+                alert(data);
+            }
+        });*/
+
   	}
 
-  /*	$(document).ready(function(){
+  	$(document).ready(function(){
   		//Do MyPaper
-  		$("#my_contact").hide();
-  	}*/
+  	//	$("#my_contact").hide();
+  /*	document.cookie="userId=828";
+alert(document.cookie);*/
+		username = "qqq";
+  	});
 
 </script>
 
@@ -157,16 +296,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<h1 class="myheadText">Paper</h1>
 				<h1 class="myheadLabel">Modify</h1>
 				<h1 class="myheadLabel">Advice</h1>
-				<h1 class="myheadLabel">Statut</h1>
+				<h1 class="myheadLabel">Status</h1>
 		</div>
 	</div>
 
-	<div class="container" style="background: lightgray;">
+	<div class="container" style="background: #e9e9e9;">
 		<div>
-			<h1 class="mytext" value="Paper" onclick="ShowPaperClick(this)">Paper</h1>
+			<div class="mytext">
+				<h1 class="myTitleText" value="Paper" onclick="ShowPaperClick(this)">Discussion on the Application of Multi-media In English 2   Discussion on the Application of Multi-media In English Teaching  </h1>
+				<h1 class="myMsgText" value="Paper" onclick="ShowPaperClick(this)">Author: OOO </h1>
+			</div>
 			<input type="button" class="mybutton" value="Modify" onclick="ModifyPaperClick(this)">
 			<input type="button" class="mybutton" value="Advice" onclick="display_alert()">
-			<input type="button" class="mybutton" value="Statut">
+			<input class="myStatusText" value="Status" disabled="disabled">
 		</div>
 	</div>
 
@@ -175,16 +317,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<h1 class="mytext" value="Paper" onclick="ShowPaperClick(this)">Paper</h1>
 			<input type="button" class="mybutton" value="Modify" onclick="ModifyPaperClick(this)">
 			<input type="button" class="mybutton" value="Advice" onclick="alert("asss");">
-			<input type="button" class="mybutton" value="Statut">
+			<input class="myStatusText" value="Status" disabled="disabled">
 		</div>
 	</div>
 
-	<div class="container" style="background: lightgray;">
+	<div class="container" style="background: #e9e9e9;">
 		<div>
 			<h1 class="mytext" value="Paper" onclick="display_alert()">Paper</h1>
 			<input type="button" class="mybutton" value="Modify">
 			<input type="button" class="mybutton" value="Advice">
-			<input type="button" class="mybutton" value="Statut">
+			<input class="myStatusText" value="Statu" disabled="disabled">
 		</div>
 	</div>
 </div>
