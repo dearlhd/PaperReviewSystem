@@ -16,6 +16,36 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <link href='http://fonts.useso.com/css?family=Raleway:400,100,200,300,500,600,700|Cinzel+Decorative:400,700' rel='stylesheet' type='text/css'>
     <!--//webfonts-->
 </head>
+<style type="text/css">
+    table.altrowstable {
+        font-family: verdana,arial,sans-serif;
+        font-size:11px;
+        color:#333333;
+        border-width: 1px;
+        border-color: #a9c6c9;
+        border-collapse: collapse;
+        width:100%;
+    }
+    table.altrowstable th {
+        text-align:center;
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #a9c6c9;
+    }
+    table.altrowstable td {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #a9c6c9;
+    }
+    .oddrowcolor{
+        background-color:whitesmoke;
+    }
+    .evenrowcolor{
+        background-color:lightgoldenrodyellow;
+    }
+</style>
 <body>
 <div id="home" class="header">
     <div class="header-bottom">
@@ -23,33 +53,93 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <div class="logo">
                 <a href=""><h1>Paper<span>_System</span></h1></a>
             </div>
-            <span class="menu"></span>
-            <div class="top-menu">
-                <ul>
-                    <nav>
-                        <li><a href="viewPaper.html">查阅论文</a></li>
-                        <li><a href="reviewer.html">审稿</a></li>
-                        <li><a onclick="logOut();">退出</a></li>
-                    </nav>
-                </ul>
-            </div>
 
-            <!-- script for menu -->
-            <div class="clearfix"></div>
         </div>
     </div>
 
     <div class="banner two">
-        <div class="container">
-            <div class="pag-nav">
-                <ul class="p-list">
-                    <li><a href="" class="act">待审阅</a></li> &nbsp;&nbsp;/&nbsp;
-                    <li><a href="">已审阅（有更新）</a></li>/&nbsp;
-                    <li><a href="">已审阅</a></li>
-                </ul>
-            </div>
-        </div>
+        <h3 style="text-align: left">论文名</h3>
+    </div>
+
+    <br>
+
+    <div class="container">
+        <table class = "altrowstable" id="alternatecolor">
+            <tr>
+                <th>审稿意见</th>
+                <th>信任度</th>
+                <th>审稿人</th>
+            </tr>
+        </table>
     </div>
 </div>
+<script type="text/javascript">
+    function GetRequest() {
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+                theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
+    }
+    $(document).ready(function(){
+        var Request = new Object();
+        Request = GetRequest()
+        var paperID = Request['pid'];
+
+        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/";
+        myurl = myurl + "?Comment.commentwhat.id="+paperID;
+
+        console.log(myurl);
+
+        $.ajax({
+            url: myurl,
+            type: "GET",
+            success: function (data) {
+                var obj = eval(data);
+                console.log(obj.toString());
+                var comment = obj.Comment;
+                for (var i = 0; i < comment.length; i++) {
+                    showComment(comment[i]);
+                }
+            }
+        });
+    })
+
+    function showComment(comment) {
+        var content = "<tr>\
+                         <th>"+comment.advice+"</th>\
+                         <th>"+comment.confidence+"</th>\
+                         <th>"+comment.reviewer+"</th>\
+                       </tr>";
+        $("#alternatecolor").append(content);
+    }
+</script>
+
+<script type="text/javascript">
+    function altRows(id){
+        if(document.getElementsByTagName){
+
+            var table = document.getElementById(id);
+            var rows = table.getElementsByTagName("tr");
+
+            for(i = 0; i < rows.length; i++){
+                if(i % 2 == 0){
+                    rows[i].className = "evenrowcolor";
+                }else{
+                    rows[i].className = "oddrowcolor";
+                }
+            }
+        }
+    }
+
+    window.onload=function(){
+        altRows('alternatecolor');
+    }
+</script>
 </body>
 </html>
