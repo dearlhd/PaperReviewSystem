@@ -97,16 +97,15 @@
 
         $.ajax({
             url: myurl,
-            async:false,
             type: "GET",
             success: function (data) {
                 var obj = eval(data);
-                alert(obj.User[0].name);
-                if (obj.User[0].name != "") {
+
+                if (!jQuery.isEmptyObject(obj)) {
                     sweetAlert("", "该用户名已被注册", "error");
                     return false;
                 }
-                else if(5>6){
+                else{
                     var userInfo = {
                         "name": uname,
                         "password": psw,
@@ -121,6 +120,7 @@
                         success: function (data) {
                             var obj = eval(data);
                             document.cookie = "name="+uname;
+                            window.location.href="contributor.html";
                         }
                     });
                 }
@@ -149,6 +149,17 @@
                 var obj = eval(data);
                 if (obj.User[0].name == uname) {
                     document.cookie = "name="+uname;
+
+                    if(obj.User[0].role == "writer") {
+                        window.location.href="contributor.html";
+                    }
+                    else if (obj.User[0].role == "reviewer"){
+                        window.location.href="reviewer.html";
+                    }
+                    else if ((obj.User[0].role == "chairman")) {
+                        window.location.href="chairman.html";
+                    }
+
                 }
             }
         });
