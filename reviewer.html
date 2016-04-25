@@ -71,22 +71,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <button class="btn btn-primary btn-lg" style="float:right" onclick="checkAdviceClick(this)">查看意见</button>
         </div>
     </div>
-
-    <div id="example" class="modal hide fade in" style="display: none; ">
-        <div class="modal-header">
-            <a class="close" data-dismiss="modal">×</a>
-            <h3>This is a Modal Heading</h3>
-        </div>
-        <div class="modal-body">
-            <h4>Text in a modal</h4>
-            <p>You can add some text here.</p>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn btn-success">Call to action</a>
-            <a href="#" class="btn" data-dismiss="modal">Close</a>
-        </div>
-    </div>
-
 </div>
 
 <script type="text/javascript">
@@ -95,8 +79,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var role=document.cookie.split(";")[1].split("=")[1];
 
         var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
-        //myurl = myurl + "?User.name="+username;
-        myurl = myurl + "?User.name=rev2";
+        myurl = myurl + "?User.name="+username;
+        //myurl = myurl + "?User.name=rev2";
 
         $.ajax({
             url: myurl,
@@ -107,15 +91,56 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 for (var i = 0; i < papers.length; i++) {
                     showPaperInfo(papers[i], i);
                 }
-
             }
         });
     })
 
     function showPaperInfo(data, flag) {
-        var content;
+        var content = '\
+        <div class="modal fade" id="Modal'+data.id+'" tabindex="-1" role="dialog"\
+        aria-labelledby="myModalLabel" aria-hidden="true">\
+            <div class="modal-dialog">\
+                <div class="modal-content">\
+                    <div class="modal-header">\
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>\
+                        <h4 class="modal-title" id="myModalLabel">请选择评审意见</h4>\
+                    </div>\
+                    <div class="modal-body">\
+                          <table align="center">\
+                              <tr>\
+                                <td><label for="name">审稿意见</label></td>\
+                                <td><select id="advice'+data.id+'" class="form-control"> \
+                                    <option value="Strong Accept">Strong Accept</option>\
+                                    <option value="Accept">Accept</option>\
+                                    <option value="Weak Accept">Weak Accept</option>\
+                                    <option value="Borderline Paper">Borderline Paper</option>\
+                                    <option value="Weak Reject">Weak Reject</option>\
+                                    <option value="Reject">Reject</option>\
+                                    <option value="Strong Reject">Strong Reject</option>\
+                                </select></td>\
+                              </tr>\
+                              <tr>\
+                                  <td><label for="name">信任度</label></td>\
+                                  <td><select id="confidence'+data.id+'" class="form-control"> \
+                                    <option value="Expert">Expert</option>\
+                                    <option value="High">High</option>\
+                                    <option value="Medium">Medium</option>\
+                                    <option value="Low">Low</option>\
+                                    <option value="Null">Null</option>\
+                                  </select></td>\
+                              </tr>\
+                          </table>\
+                    </div>\
+                    <div class="modal-footer">\
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>\
+                        <button type="button" class="btn btn-primary" onclick="addAdvice('+data.id+')">提交</button>\
+                    </div>\
+                </div><!-- /.modal-content -->\
+            </div><!-- /.modal-dialog -->\
+        </div><!-- /.modal -->';
+
         if (flag % 2 == 1) {
-            content = '\
+            content += '\
             <div class="container" style="background: lightgray;">\
                 <div>\
                     <h1 class="mytext" value="Paper" onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</h1>\
@@ -125,7 +150,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             </div>';
         }
         else {
-            content = '\
+            content += '\
             <div class="container" style="background: lightgray;">\
                 <div>\
                     <h1 class="mytext" value="Paper" onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</h1>\
@@ -141,7 +166,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 <script tpye="text/javascript">
     function checkAdviceClick(data) {
-        //$(obj).parent();
         var paperID = data;
         console.log(paperID);
         var url = "viewAdvice.html?pid="+paperID;
@@ -149,9 +173,54 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     }
 
     function addAdviceClick(paperID) {
-
-        $("#example").modal();
+        $("#Modal"+paperID).modal();
     }
+
+    function addAdvice(paperID) {
+        var advice = $("#advice"+paperID).val();
+        var confidence = $("#confidence"+paperID).val();
+
+        var username=document.cookie.split(";")[0].split("=")[1];
+
+        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.name="+username;
+        var userid;
+        $.ajax({
+            url: myurl,
+            type: "GET",
+            success: function (data) {
+                var obj = eval(data);
+                userid = obj.User[0].id;
+
+                var comment = {
+                    "reviewer":username,
+                    "advice":advice,
+                    "confidence":confidence,
+                    "commentwhat":{"id":paperID, "type":"Paper"},
+                    "whocomment":{"id":userid, "type":"User"}
+                }
+
+                console.log(comment);
+
+                $.ajax({
+                    url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/",
+                    contentType: "application/json",
+                    type: "POST",
+                    data: JSON.stringify(comment),
+                    success: function (data) {
+                        var obj = eval(data);
+                        document.cookie = "name="+uname;
+                        window.location.href="contributor.html";
+                    }
+                });
+
+                $("#Modal"+paperID).modal("hide");
+
+            }
+        });
+
+
+    }
+
 </script>
 </body>
 </html>
