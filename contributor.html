@@ -13,140 +13,100 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href="css/myCss.css" rel='stylesheet' type='text/css' />
 <script src="js/jquery.min.js"> </script>
 
+</head>
+<body>
+	<!--start-home-->
+
+	<div id="home" class="header">
+		<div class="header-bottom">
+			<div class="container">
+				<div class="logo">
+					<a href="index.html"><h1>Paper<span>_System</span></h1></a>
+				</div>
+				<span class="menu"></span>
+				<div class="top-menu">
+					<ul>
+					<nav>
+            <li><a onclick="QueryClick();">Query</a></li> 
+						<li><a onclick="DissertClick();">Dissert</a></li> 
+						<li><a onclick="MyPaperClick();">MyPaper</a></li>
+						<li><a onclick="MyLogOutClick();">LogOut</a></li>	
+					</nav>
+					</ul>
+				</div>
+				
+			<!-- script for menu -->
+				<div class="clearfix"></div>
+			</div>
+		</div>
+
+	<div class="banner two">
+		<div class="container">	
+		<div class="pag-nav">
+				<ul class="p-list">
+			   	<li><a href="index.html"></a></li> 
+				</ul>
+			</div>
+
+		</div>   
+	</div>
+	</div>
+
+	<div class="contact" id="my_contact">
+	</div>
+
+  <div class="contact">
+  </div>
+</body>
+</html>
+
+
 <script>
-	var cnt = 0;
-	var username;
-	var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
+	  var cnt = 0;
+	  var username;
+	  var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
 
-	function display_alert()
-  	{
- 		alert("I am an alert box!!")
- 	}
+	  function display_alert(){
+  		alert("I am an alert box!!")
+ 	  }
 
-	function ShowPaperClick(obj)
-  	{
-  		alert(obj);
+	  function ShowPaperClick(obj){
+  		//alert(obj);
   		//alert($(obj).text());
+  		window.open( "viewPaper.html?pid=" + obj, "", "top=150, left=250, width=1400, height=800");
   	}
 
-  	function ModifyPaperClick(obj)
-  	{
+  	function ModifyPaperClick(obj){
   		alert();
   	}
 
-  	function AdvicePaperClick(obj)
-  	{
-  		//window.open("viewAdvice.html?pid=" + obj, "", "top=150, left=300, width=600, height=400");
+    function downloadPaperClick(obj){
+      $.ajax({
+        url : "http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj,
+        type : "GET",
+        success : function(msg){
+          console.log(msg);
+          ///////////////////////////////////////////////////////////////////////////////////////////
+        }
+      });
+    }
+
+  	function AdvicePaperClick(obj){
+  		//alert(obj);
+  		window.open("viewAdvice.html?pid=" + obj, "", "top=150, left=300, width=600, height=400");
   	}
 
-  	function SubmitPaperClick(){
-  		//alert($("#paper").html());
-  		var title = $("#title").val();
-  		var unit = $("#unit").val();
-  		var address = $("#address").val();
-  		var summary = $("#summary").val();
-  		//var content = $("#content").val();
-  		var keywords = $("#keywords").val();
-  		var subimttime;
-  		var myDate = new Date();
-  		submittime = myDate.getFullYear() + "-" + myDate.getMonth() + "-" + myDate.getDate(); 
-  		//alert(submittime);
+    function QueryClick(){
 
-  		var status = "firstTrial";
-  		if ((title != null) && (unit != null) && (address != null) && (summary != null) && (keywords != null) && (content != null))//not null
-  		{
-  			var paperInfo={
-  					////////////////////////
-  				"title" : title,
-  				"author" : username,
-  				"unit" : unit,
-  				"address" : address,
-  				"summary" : summary,
-  				"submittime" : submittime,
-  				"status" :　status
-  			};
-  //			alert(username);
-  			alert(submittime);
-  			$.ajax({
-  				url: myurl + "Paper/",
-  				contentType: "application/json",
-  				type: "POST",
-  				data: JSON.stringify(paperInfo),
-  				success: function(msg){
-  				//	alert("submit successful");
-  					//////////////////////////herf paper
-  					//do paperfile 
-  					var obj = eval(msg);
-  					var paperId = obj.id;
-  					alert(paperId);
-
-
-  					var files = $(":file")[0].files;
-  					//alert(files);
-      				var formData = new FormData();
-      			    formData.append("file", files[0]);
-      				$.ajax({
-            			url: myurl + "Paper/" + paperId,
-          		  		type: "POST",
-            			data: formData,
-         		   		contentType: false,
-           				processData: false,
-            			success: function(data){
-                			console.log(data);
-                			alert("add file");
-            			}	
-        			});
-      				//do keywords
-
-      				var keylist = keywords.split(";");
-      				alert(keylist.length);
-      				
-      				for (var i = 0; i < keylist.length; ++i){
-      					
-      					var keywordsInfo={
-      						"word" : keylist[i],
-      						"match" : {"id" : paperId, "type" : "Paper"}
-      					};
-
-      					$.ajax({
-      						url: myurl + "Keywords/",
-      						contentType: "application/json",
-  							type: "POST",
-  							data: JSON.stringify(keywordsInfo),
-  							success: function(msg){
-  								alert("add keywords" + keylist[i]);
-  							}
-      					});
-      				
-      				}
-  				}
-  			});
-  		}
-  		else alert("以上几项不能为空!");
-  	}
+    }
 
   	function DissertClick(){
-
-  		/*$("#my_contact").html("<h1 class='myheadText'>Plllaper</h1><h1 class='myheadLabel'>Modllllify</h1><h1 class='myheadLabel'>Advillce</h1><h1 class='myheadLabel'>Status</h1>");
-  		alert($("#my_contact").html());*/
-  		$("#my_contact").html("" +
-  			"<div class='container' id='paper'>" + 
-  				"<input class='myinput' id='title' placeholder='标题'>" + 
-  				"<input class='myinput' id='unit' placeholder='作者单位'>" + 
-  				"<input class='myinput' id='address' placeholder='通讯地址'>" + 
-  				"<input class='myinput' id='keywords' placeholder='关键词(用分号隔开)'>" +
-  				"<textarea class='myinput' id='summary' placeholder='摘要'></textarea>" +  
-  				"<input type='file' class='myinput' style='width:40%' name='file' id='content' placeholder='上传正文pdf'>" + 
-  				"<input type='button' class='mybutton' style='float:none;'' value='提交'' onclick='SubmitPaperClick();''>" +
-  			"</div>"
-  		);
-
+  		window.location.href = "contributorDissert.html";
   	}
 
   	function MyPaperClick(){
   		//get username
   		var layout = "";
-
   		layout = 
   			"<div class='container'>" +
 				"<div class='contact-main'>" + 
@@ -165,61 +125,74 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   				type: "GET",
   				success: function(msg){
   					var obj = eval(msg);
-  					//for (var i = 0; i < obj.Paper.length; ++i){
-  					for (var i = 0; i < 1; ++i){
-  						cnt++;
+  					if (jQuery.isEmptyObject(obj)){
+  						return false;
+  					}
+  					//console.log(obj.Paper.length);
+  					for (var i = 0; i < obj.Paper.length; ++i){
+  					//for (var i = 0; i < 2; ++i){
+  					//	console.log(i);
   						
 
   					//	alert(obj.Paper[i].id + "  " + obj.Paper[i].title);
 
-  						var PaperMsg = "";
-  						PaperMsg += ("作者: " + obj.Paper[i].author + "  提交时间: " + obj.Paper[i].submittime + "  关键词: ");
-  						alert(PaperMsg);
+  					
+  						//alert(PaperMsg);
   						
   						$.ajax({
-  							//url: myurl + "Keywords/?Keywords.match.id=" + obj.Paper[i].id,
-  							url: myurl + "Keywords/?Keywords.match.id=1461484961118",
+  							url: myurl + "Keywords/?Keywords.match.id=" + obj.Paper[i].id,
   							type : "GET",
+  							async : false,
   							success: function(_msg){
   								//console.log(_msg);
-  								var _obj = eval(_msg);
-  								var k = _obj.Keywords.length;
 
-  								for (var j = 0; j < k; ++j) {
-  									alert("yes");
+  								//console.log(obj.Paper[i].id);
+  								var _obj = eval(_msg);
+  								if (jQuery.isEmptyObject(_obj)){
+  									return false;
   								}
 
-  								 
-  								 	//PaperMsg += (_obj.Keywords[j].word + "  ");
-  								 	//alert(_obj.Keywords[j].word);
-  							}
+  								var k = _obj.Keywords.length;
+								  var PaperMsg = "";
+
+
+
+  								PaperMsg += ("作者: " + obj.Paper[i].author + "  提交时间: " + obj.Paper[i].submittime + "  关键词: ");
+
+  								//console.log(PaperMsg);
+  								for (var j = 0; j < k; ++j) {
+  									PaperMsg += (_obj.Keywords[j].word + " ");
+  									//alert(_obj.Keywords[j].word);
+  								}
+  								//alert(PaperMsg);
+								//console.log(PaperMsg);
+  								cnt++;
+  								layout = "";
+                  var textColor = "";
+  								if (cnt % 2 == 1) 
+                    textColor = "style='background: #d9d9d9;'";
+                  else textColor = "style='background: #f0f0f0;'";
+  								layout += "<div class='container'" + textColor + ">";
+								  layout +=
+								  	("<div>" +
+									   	"<div class='mytext'>" +
+									  		"<textarea class='myTitleText myTitleTextAdd myTextArea'" + textColor + " onclick='ShowPaperClick(" + obj.Paper[i].id + ")'>" + obj.Paper[i].title + "</textarea>" +
+										  	"<h1 class='myMsgText'>" + PaperMsg + "</h1>" + 
+										  "</div>"　+
+										  	"<input type='button' class='mybutton' value='Modify' onclick='ModifyPaperClick(" + obj.Paper[i].id + ")'>" +
+										  	"<input type='button' class='mybutton' value='Advice' onclick='AdvicePaperClick(" + obj.Paper[i].id + ")'>" +
+										  	"<input class='myStatusText' value='" + obj.Paper[i].status + "'" + textColor + " disabled='disabled'>" +
+                        "<input type='button' class='myImgButton' onclick='downloadPaperClick(" + obj.Paper[i].id + ")'>" +
+									 "</div>" +
+								  "</div>");
+
+								  $("#my_contact").append(layout);
+							}
   						});
-
-
-  						layout = "";
-  						if (cnt % 2 == 1)
-  							layout += "<div class='container' style='background: #e9e9e9;'>";
-  						else layout += "<div class='container'>";
-						layout +=
-							("<div>" +
-								"<div class='mytext'>" +
-									"<h1 class='myTitleText' value='Paper' onclick='ShowPaperClick(" + obj.Paper[i].title + ")'>Paper</h1>" +
-									"<h1 class='myMsgText'>" + PaperMsg + "</h1>" + 
-								"</div>"　+
-									"<input type='button' class='mybutton' value='Modify' onclick='ModifyPaperClick(" + obj.Paper[i].id + ")'>" +
-									"<input type='button' class='mybutton' value='Advice' onclick='AdvicePaperClick(" + obj.Paper[i].id + ")'>" +
-									"<input class='myStatusText' value='" + obj.Paper[i].status + "' disabled='disabled'>" +						
-							"</div>" +
-						"</div>");
-
-						$("#my_contact").append(layout);
   					}
   				}	
 
   			});
-
-
-
 
   		//	alert("delete begin");
   	/*	$.ajax({
@@ -240,96 +213,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
   	}
 
+  	function MyLogOutClick(){
+    	window.location.href = "login.html";
+    }
+
   	$(document).ready(function(){
   		//Do MyPaper
   	//	$("#my_contact").hide();
   /*	document.cookie="userId=828";
 alert(document.cookie);*/
+
 		username = "qqq";
+		MyPaperClick();
+
   	});
 
 </script>
-
-
-</head>
-<body>
-	<!--start-home-->
-	<div id="home" class="header">
-		<div class="header-bottom">
-			<div class="container">
-				<div class="logo">
-					<a href="index.html"><h1>Paper<span>_System</span></h1></a>
-				</div>
-				<span class="menu"></span>
-				<div class="top-menu">
-					<ul>
-					<nav>
-						<li><a onclick="DissertClick();">Dissert</a></li> 
-						<li><a onclick="MyPaperClick();">MyPaper</a></li>
-						<li><a onclick="MyLogOutClick();">LogOut</a></li>	
-					</nav>
-					</ul>
-				</div>
-				
-			<!-- script for menu -->
-				<div class="clearfix"></div>
-			</div>
-		</div>
-
-	<div class="banner two">
-		<div class="container">	
-		<div class="pag-nav">
-				<ul class="p-list">
-					<li><a href="index.html">Home</a></li> &nbsp;&nbsp;/&nbsp;
-					<li class="act">&nbsp; Error Page</li>
-				</ul>
-			</div>
-
-		</div>   
-	</div>
-	</div>
-<!--error-->
-
-<div class="contact" id="my_contact">
-	<div class="container">
-		<div class="contact-main">
-				<h1 class="myheadText">Paper</h1>
-				<h1 class="myheadLabel">Modify</h1>
-				<h1 class="myheadLabel">Advice</h1>
-				<h1 class="myheadLabel">Status</h1>
-		</div>
-	</div>
-
-	<div class="container" style="background: #e9e9e9;">
-		<div>
-			<div class="mytext">
-				<h1 class="myTitleText" value="Paper" onclick="ShowPaperClick(this)">Discussion on the Application of Multi-media In English 2   Discussion on the Application of Multi-media In English Teaching  </h1>
-				<h1 class="myMsgText" value="Paper" onclick="ShowPaperClick(this)">Author: OOO </h1>
-			</div>
-			<input type="button" class="mybutton" value="Modify" onclick="ModifyPaperClick(this)">
-			<input type="button" class="mybutton" value="Advice" onclick="display_alert()">
-			<input class="myStatusText" value="Status" disabled="disabled">
-		</div>
-	</div>
-
-	<div class="container">
-		<div>
-			<h1 class="mytext" value="Paper" onclick="ShowPaperClick(this)">Paper</h1>
-			<input type="button" class="mybutton" value="Modify" onclick="ModifyPaperClick(this)">
-			<input type="button" class="mybutton" value="Advice" onclick="alert("asss");">
-			<input class="myStatusText" value="Status" disabled="disabled">
-		</div>
-	</div>
-
-	<div class="container" style="background: #e9e9e9;">
-		<div>
-			<h1 class="mytext" value="Paper" onclick="display_alert()">Paper</h1>
-			<input type="button" class="mybutton" value="Modify">
-			<input type="button" class="mybutton" value="Advice">
-			<input class="myStatusText" value="Statu" disabled="disabled">
-		</div>
-	</div>
-</div>
-
-</body>
-</html>

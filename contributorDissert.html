@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>contributorDissert</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<!-- Custom Theme files -->
+<link href="css/style.css" rel='stylesheet' type='text/css' />	
+<link href="css/myCss.css" rel='stylesheet' type='text/css' />
+<script src="js/jquery.min.js"> </script>
+
+</head>
+<body>
+	<!--start-home-->
+	<div id="home" class="header">
+		<div class="header-bottom">
+			<div class="container">
+				<div class="logo">
+					<a href="index.html"><h1>Paper<span>_System</span></h1></a>
+				</div>
+				<span class="menu"></span>
+				<div class="top-menu">
+					<ul>
+					<nav>
+						<li><a onclick="DissertClick();">Dissert</a></li> 
+						<li><a onclick="MyPaperClick();">MyPaper</a></li>
+						<li><a onclick="MyLogOutClick();">LogOut</a></li>	
+					</nav>
+					</ul>
+				</div>
+				
+			<!-- script for menu -->
+				<div class="clearfix"></div>
+			</div>
+		</div>
+
+	<div class="banner two">
+		<div class="container">	
+		<div class="pag-nav">
+				<ul class="p-list">
+					<li><a href="index.html"></a></li>
+				</ul>
+			</div>
+
+		</div>   
+	</div>
+	</div>
+
+<div class="contact" id="my_contact">
+</div>
+
+<div class="contact">
+</div>
+
+</body>
+</html>
+
+
+<script>
+    var cnt = 0;
+    var username;
+    var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
+
+    function display_alert()
+    {
+      alert("I am an alert box!!")
+    }
+
+    function SubmitPaperClick(){
+      //alert($("#paper").html());
+      var title = $("#title").val();
+      var unit = $("#unit").val();
+      var address = $("#address").val();
+      var summary = $("#summary").val();
+      //var content = $("#content").val();
+      var keywords = $("#keywords").val();
+      var subimttime;
+      var myDate = new Date();
+      submittime = myDate.getFullYear() + "-" + myDate.getMonth() + "-" + myDate.getDate(); 
+      //alert(submittime);
+
+      var status = "firstTrial";
+      if ((title != null) && (unit != null) && (address != null) && (summary != null) && (keywords != null) && (content != null))//not null
+      {
+        var paperInfo={
+            ////////////////////////
+          "title" : title,
+          "author" : username,
+          "unit" : unit,
+          "address" : address,
+          "summary" : summary,
+          "submittime" : submittime,
+          "status" :　status
+        };
+        //alert(username);
+        //alert(submittime);
+        $.ajax({
+          url: myurl + "Paper/",
+          contentType: "application/json",
+          type: "POST",
+          data: JSON.stringify(paperInfo),
+          success: function(msg){
+          //  alert("submit successful");
+            //////////////////////////herf paper
+            //do paperfile 
+            var obj = eval(msg);
+            var paperId = obj.id;
+            //alert(paperId);
+
+
+            var files = $(":file")[0].files;
+            //alert(files);
+              var formData = new FormData();
+                formData.append("file", files[0]);
+              $.ajax({
+                  url: myurl + "Paper/" + paperId,
+                  type: "POST",
+                  data: formData,
+                  contentType: false,
+                  processData: false,
+                  success: function(data){
+                      //console.log(data);
+                      //alert("add file");
+                  } 
+              });
+              //do keywords
+
+              var keylist = keywords.split(";");
+              //alert(keylist.length);
+              
+              for (var i = 0; i < keylist.length; ++i){
+                
+                var keywordsInfo={
+                  "word" : keylist[i],
+                  "match" : {"id" : paperId, "type" : "Paper"}
+                };
+
+                $.ajax({
+                  url: myurl + "Keywords/",
+                  contentType: "application/json",
+                  type: "POST",
+                  data: JSON.stringify(keywordsInfo),
+                  success: function(msg){
+                    //alert("add keywords" + keylist[i]);
+                  }
+                });
+              
+              }
+          }
+        });
+      }
+      else 
+      {
+        alert("以上几项不能为空!");
+        return false;
+      }
+      if (confirm("论文添加成功！") < 2)
+      {
+        //alert("gogogo");
+        window.location.href = "contributor.html";
+      }
+
+    }
+
+    function DissertClick(){
+
+      /*$("#my_contact").html("<h1 class='myheadText'>Plllaper</h1><h1 class='myheadLabel'>Modllllify</h1><h1 class='myheadLabel'>Advillce</h1><h1 class='myheadLabel'>Status</h1>");
+      alert($("#my_contact").html());*/
+      $("#my_contact").html("" +
+        "<div class='container' id='paper'>" + 
+          "<input class='myinput' id='title' placeholder='标题'>" + 
+          "<input class='myinput' id='unit' placeholder='作者单位'>" + 
+          "<input class='myinput' id='address' placeholder='通讯地址'>" + 
+          "<input class='myinput' id='keywords' placeholder='关键词(用分号隔开)'>" +
+          "<textarea class='myinput' style='height:300px;' id='summary' placeholder='摘要'></textarea>" +  
+          "<input type='file' class='myinput' style='width:40%' name='file' id='content' placeholder='上传正文pdf'>" + 
+          "<input type='button' class='mybutton' style='float:none;'' value='提交'' onclick='SubmitPaperClick();''>" +
+        "</div>"
+      );
+
+    }
+
+    function MyPaperClick(){
+      window.location.href = "contributor.html";
+    }
+
+    function MyLogOutClick(){
+      window.location.href = "login.html";
+    }
+
+    $(document).ready(function(){
+      //Do MyPaper
+    //  $("#my_contact").hide();
+    /*  document.cookie="userId=828";
+    alert(document.cookie);*/
+      username = "qqq";
+      DissertClick();
+    });
+
+</script>

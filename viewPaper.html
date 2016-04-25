@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>contributor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<!-- Custom Theme files -->
+<link href="css/style.css" rel='stylesheet' type='text/css' />	
+<link href="css/myCss.css" rel='stylesheet' type='text/css' />
+<script src="js/jquery.min.js"> </script>
+
+</head>
+<body>
+	<!--start-home-->
+	<div id="home" class="header">
+		<div class="header-bottom">
+			<div class="container">
+				<div class="logo">
+					<a href="index.html"><h1>Paper<span>_System</span></h1></a>
+				</div>
+				<span class="menu"></span>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+
+	<div class="banner two">
+		<div class="container">	
+		<div class="pag-nav">
+				<ul class="p-list">
+					<li><a href="index.html" id="myPaperName"></a></li>
+				</ul>
+			</div>
+
+		</div>   
+	</div>
+	</div>
+
+	<div class="contact" id="my_contact">
+	</div>
+
+  <div class="contact">
+  </div>
+
+</body>
+</html>
+
+<script>
+  var  paperID;
+  var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
+
+  function GetRequest() {
+    var url = location.search; //获取url中"?"符后的字串
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      strs = str.split("&");
+      for(var i = 0; i < strs.length; i ++) {
+        theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+      }
+    }
+    return theRequest;
+  }
+
+  function showPaper(){
+    var title = "";
+    var author = "";
+    var unit = "";
+    var address = "";
+    var summary = "";
+    var submittime = "";
+    var status = "";
+    var keywords = "";
+
+    $.ajax({
+      url : myurl + "Paper/?Paper.id=" + paperID,
+      type : "GET",
+      async : false,
+      success : function(msg){
+        var obj = eval(msg);
+        if (jQuery.isEmptyObject(obj)){
+          return false;
+        }
+        title = obj.Paper[0].title;
+        author = obj.Paper[0].author;
+        unit = obj.Paper[0].unit;
+        address = obj.Paper[0].address;
+        summary = obj.Paper[0].summary;
+        submittime = obj.Paper[0].submittime;
+        status = obj.Paper[0].status;
+      }
+    });
+
+    $.ajax({
+      url: myurl + "Keywords/?Keywords.match.id=" + paperID,
+      type : "GET",
+      async : false,
+      success: function(msg){
+        var obj = eval(msg);
+        if (jQuery.isEmptyObject(obj)){
+          return false;
+        }
+        for (var i = 0; i < obj.Keywords.length; ++i)
+          keywords += (obj.Keywords[i].word + " ");
+      }
+    });
+
+    var layout = "";
+
+    layout = 
+      "<div class='container'>" +
+          "<input class='myTitleText myTitleTextAdd' disabled='disabled' value='论文标题'>" +
+          "<textarea class='myMsgText myMsgTextAdd myTextArea' style='height:60px;background-color: #e9e9e9;' disabled='disabled'>" + title + "</textarea>" +
+      "</div>" +
+      "<div class='container'>" +
+          "<input class='myTitleText myTitleTextAdd' disabled='disabled' value='论文作者'>" +
+          "<input class='myMsgText myMsgTextAdd' disabled='disabled' value='" + author + "' style='background-color: #e9e9e9;'>" +
+      "</div>" +
+      "<div class='container'>" +
+          "<input class='myTitleText myTitleTextAdd' disabled='disabled' value='作者单位'>" +
+          "<input class='myMsgText myMsgTextAdd' disabled='disabled' value='" + unit + "' style='background-color: #e9e9e9;'>" +
+      "</div>" +
+      "<div class='container'>" +
+          "<input class='myTitleText myTitleTextAdd' disabled='disabled' value='通讯地址'>" +
+          "<input class='myMsgText myMsgTextAdd' disabled='disabled' value='" + address + "' style='background-color: #e9e9e9;'>" +
+      "</div>" +
+      "<div class='container'>" +
+          "<input class='myTitleText myTitleTextAdd' disabled='disabled' value='提交时间'>" +
+          "<input class='myMsgText myMsgTextAdd' disabled='disabled' value='" + submittime + "' style='background-color: #e9e9e9;'>" +
+      "</div>" +
+      "<div class='container'>" +
+          "<input class='myTitleText myTitleTextAdd' disabled='disabled' value='论文状态'>" +
+          "<input class='myMsgText myMsgTextAdd' disabled='disabled' value='" + status + "' style='background-color: #e9e9e9;'>" +
+      "</div>" +
+      "<div class='container'>" +
+          "<input class='myTitleText myTitleTextAdd' disabled='disabled' value='关键词'>" +
+          "<input class='myMsgText myMsgTextAdd' disabled='disabled' value='" + keywords + "' style='background-color: #e9e9e9;'>" +
+      "</div>" +
+      "<div class='container'>" +
+          "<input class='myTitleText myTitleTextAdd' disabled='disabled' value='摘要'>" +
+          "<textarea class='myMsgText myMsgTextAdd' style='height:300px;background-color: #e9e9e9;' disabled='disabled'>" + summary + "</textarea>" +
+      "</div>";
+    $("#my_contact").html(layout);
+   //alert(title + " " + author + " " + submittime + " " + status + " " + keywords);
+  }
+
+  $(document).ready(function(){
+    var Request = new Object();
+    Request = GetRequest();
+    paperID = Request['pid'];
+    //alert(paperID);
+    showPaper();
+  });
+
+</script>
