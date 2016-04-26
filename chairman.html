@@ -85,37 +85,61 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             type: "GET",
             success: function (data) {
                 var obj = eval(data);
-
-                var content = '';
-
-                if (flag % 2 == 0) {
-                    content += '\
-                        <div class="container" style="background: lightgray;">\
-                            <div>\
-                                <h1 class="mytext" value="Paper" onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</h1>\
-                                <input type="button" class="mybutton" value="分配" onclick="distributeClick(' + data.id + ')">\
-                            </div>\
-                        </div>';
+                var papers = obj.Paper;
+                for (var i = 0; i < papers.length; i++) {
+                    showPaperInfo(papers[i], i);
                 }
-                else {
-                    content += '\
-                        <div class="container">\
-                            <div>\
-                                <h1 class="mytext" value="Paper" onclick="ShowPaperClick(' + data.id + ','+users+')">' + data.title + '</h1>\
-                                <input type="button" class="mybutton" value="分配" onclick="distributeClick(' + data.id + ')">\
-                            </div>\
-                        </div>';
-                }
-
-                $("#content").append(content);
             }
         });
 
     })
-    
-    function distributeClick(paperID,users) {
-        $("#Modal"+paperID).modal();
 
+    function showPaperInfo(data, flag) {
+        var content = '';
+
+        var paperMsg = "作者: " + data.author + "  提交时间: " + data.submittime + "  关键词: ";
+
+        $.ajax({
+            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Keywords/?Keywords.match.id="+data.id,
+            type: "GET",
+            async: false,
+            success: function (keywordsdata) {
+                var keywords = eval(keywordsdata);
+
+                if (!jQuery.isEmptyObject(keywords)) {
+                    for (var i = 0; i < keywords.Keywords.length; i++) {
+                        paperMsg += keywords.Keywords[i].word;
+                    }
+                }
+
+                if (flag % 2 == 0) {
+                    content += '<div class="container" style="background: #d9d9d9;">\
+                                    <div class="mytext">\
+                                        <textarea class="myTitleText myTitleTextAdd myTextArea" style="background: #d9d9d9;" \
+                                            onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</textarea> \
+                                        <h1 class="myMsgText">'+paperMsg+'</h1>\
+                                    </div>';
+                }
+                else {
+                    content += '<div class="container" style="background: #f0f0f0;">\
+                                    <div class="mytext">\
+                                        <textarea class="myTitleText myTitleTextAdd myTextArea" style="background: #f0f0f0;" \
+                                            onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</textarea> \
+                                        <h1 class="myMsgText">'+paperMsg+'</h1>\
+                                    </div>';
+                }
+                content += '<div>\
+                        <input type="button" class="mybutton" value="分配" onclick="distributeClick(' + data.id + ')">\
+                    </div>\
+                </div>';
+
+                $("#content").append(content);
+                $("#content").show('slow');
+            }
+        });
+    }
+
+    function distributeClick(paperID,users) {
         var selectInfo = '';
 
         for (var i = 0; i < users.length; i++) {
@@ -157,7 +181,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             </div><!-- /.modal-dialog -->\
             </div><!-- /.modal -->';
 
+        console.log(content);
         $("#modalpos").html(content);
+        $("#myModal").modal();
+
     }
 
     function distribute(paperID) {

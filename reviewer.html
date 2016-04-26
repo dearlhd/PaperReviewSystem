@@ -136,18 +136,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         </div><!-- /.modal -->';
 
                 if (flag % 2 == 0) {
-                    content += '<div class="container" style="background: lightgray;">';
-
+                    content += '<div class="container" style="background: #d9d9d9;">\
+                                    <div class="mytext">\
+                                        <textarea class="myTitleText myTitleTextAdd myTextArea" style="background: #d9d9d9;" \
+                                            onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</textarea> \
+                                        <h1 class="myMsgText">'+paperMsg+'</h1>\
+                                    </div>';
                 }
                 else {
-                    content += '<div class="container">';
+                    content += '<div class="container" style="background: #f0f0f0;">\
+                                    <div class="mytext">\
+                                        <textarea class="myTitleText myTitleTextAdd myTextArea" style="background: #f0f0f0;" \
+                                            onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</textarea> \
+                                        <h1 class="myMsgText">'+paperMsg+'</h1>\
+                                    </div>';
                 }
                 content += '<div>\
-                        <div class="mytext">\
-                                    <textarea class="myTitleText myTitleTextAdd myTextArea" style="background: #f0f0f0;" \
-                                              onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</textarea> \
-                            <h1 class="myMsgText">'+paperMsg+'</h1>\
-                        </div>\
                         <input type="button" class="mybutton" value="添加意见" onclick="addAdviceClick(' + data.id + ')">\
                         <input type="button" class="mybutton" value="查看意见" onclick="checkAdviceClick(' + data.id + ')">\
                     </div>\
