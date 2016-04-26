@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chairman</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <!-- Custom Theme files -->
+    <link href="css/style.css" rel='stylesheet' type='text/css' />
+    <link href="css/myCss.css" rel='stylesheet' type='text/css' />
+    <script src="js/jquery-2.2.3.min.js"> </script>
+    <script src="js/bootstrap.min.js"> </script>
+    <!--webfonts-->
+    <link href='http://fonts.useso.com/css?family=Raleway:400,100,200,300,500,600,700|Cinzel+Decorative:400,700' rel='stylesheet' type='text/css'>
+    <!--//webfonts-->
+</head>
+<body>
+<div id="home" class="header">
+    <div class="header-bottom">
+        <div class="container">
+            <div class="logo">
+                <a href=""><h1>Paper<span>_System</span></h1></a>
+            </div>
+            <span class="menu"></span>
+            <div class="top-menu">
+                <ul>
+                    <nav>
+                        <li><a href="viewPaper.html">查阅论文</a></li>
+                        <li><a href="chairman.html">分配任务</a></li>
+                        <li><a href="finalReview.html">终审</a></li>
+                        <li><a href="privilegeManagement.html">权限管理</a></li>
+                        <li><a onclick="logOut();">退出</a></li>
+                    </nav>
+                </ul>
+            </div>
+
+            <!-- script for menu -->
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    <div class="banner two">
+        <div class="container">
+            <div class="pag-nav">
+                <ul class="p-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="content">
+        <div class="container">
+            <div class="contact-main">
+                <h1 class="myheadText" style="font-size:30px">论文名</h1>
+                <h1 class="myheadLabel">分配任务</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="modalpos">
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var content = "";
+
+        var users;
+        $.ajax({
+            async:false,
+            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/",
+            type: "GET",
+            success: function (usersret) {
+                var obj = eval(usersret);
+                users = obj.User;
+            }
+        });
+
+        $.ajax({
+            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.status=Delivered",
+            type: "GET",
+            success: function (data) {
+                var obj = eval(data);
+
+                var content = '';
+
+                if (flag % 2 == 0) {
+                    content += '\
+                        <div class="container" style="background: lightgray;">\
+                            <div>\
+                                <h1 class="mytext" value="Paper" onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</h1>\
+                                <input type="button" class="mybutton" value="分配" onclick="distributeClick(' + data.id + ')">\
+                            </div>\
+                        </div>';
+                }
+                else {
+                    content += '\
+                        <div class="container">\
+                            <div>\
+                                <h1 class="mytext" value="Paper" onclick="ShowPaperClick(' + data.id + ','+users+')">' + data.title + '</h1>\
+                                <input type="button" class="mybutton" value="分配" onclick="distributeClick(' + data.id + ')">\
+                            </div>\
+                        </div>';
+                }
+
+                $("#content").append(content);
+            }
+        });
+
+    })
+    
+    function distributeClick(paperID,users) {
+        $("#Modal"+paperID).modal();
+
+        var selectInfo = '';
+
+        for (var i = 0; i < users.length; i++) {
+            selectInfo += '<option value="'+users[i].id+'">'+users[i].name+'</option>';
+        }
+
+        var content = '\
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog"\
+                aria-labelledby="myModalLabel" aria-hidden="true">\
+                        <div class="modal-dialog">\
+                        <div class="modal-content">\
+                        <div class="modal-header">\
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>\
+                        <h4 class="modal-title" id="myModalLabel">Add Reviewer</h4>\
+                </div>\
+                <div class="modal-body">\
+                        <div class="row">\
+                        <div class="col-xs-5">\
+                        <select name="from" id="multiselect" class="form-control" size="8" multiple="multiple">'
+                        +selectInfo+
+                        '</select>\
+                </div>\
+                <div class="col-xs-2">\
+                        <button type="button" id="multiselect_rightAll" class="btn btn-block"> >> </button>\
+                <button type="button" id="multiselect_rightSelected" class="btn btn-block"> > </button>\
+                <button type="button" id="multiselect_leftSelected" class="btn btn-block"> < </button>\
+                <button type="button" id="multiselect_leftAll" class="btn btn-block"> << </button>\
+            </div>\
+                <div class="col-xs-5">\
+                    <select name="to" id="multiselect_to" class="form-control" size="8" multiple="multiple"></select>\
+                </div>\
+            </div>\
+            </div>\
+                <div class="modal-footer">\
+                    <button type="button" class="btn btn-default" data-dismiss="modal">close</button>\
+                    <button type="button" class="btn btn-primary" onclick="distribute('+paperID+')">submit</button>\
+                </div>\
+            </div><!-- /.modal-content -->\
+            </div><!-- /.modal-dialog -->\
+            </div><!-- /.modal -->';
+
+        $("#modalpos").html(content);
+    }
+
+    function distribute(paperID) {
+        var selectedUser=document.getElementById("multiselect_to").childNodes;
+        var usersID = new Array();
+
+        for (var i = 0; i < selectedUser.length; i++) {
+            usersID[i] = selectedUser.value;
+        }
+
+        for (var i = 0; i < usersID.length; i++) {
+            $.ajax({
+                url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/"+usersID[i],
+                type: "GET",
+                success: function (data) {
+                    var obj = eval(data);
+
+                    var userInfo = obj;
+
+                    var checks = new Array();
+                    checks = userInfo.check;
+                    checks[checks.length] = {"id": paperID};
+                    userInfo.check = checks;
+
+                    console.log(userInfo);
+
+                    $.ajax({
+                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/",
+                        contentType: "application/json",
+                        type: "PUT",
+                        data: JSON.stringify(userInfo),
+                        success: function (data) {
+                            var obj = eval(data);
+                            console.log(obj);
+                        }
+                    });
+
+                }
+            });
+        }
+
+    }
+
+</script>
+
+</body>
+</html>

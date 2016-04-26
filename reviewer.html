@@ -45,9 +45,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <div class="container">
             <div class="pag-nav">
                 <ul class="p-list">
-                    <li><a href="" class="act">待审阅</a></li> &nbsp;&nbsp;/&nbsp;
-                    <li><a href="">已审阅（有更新）</a></li>/&nbsp;
-                    <li><a href="">已审阅</a></li>
+                    <li><a href="#" onclick="unReviewPage()">待审阅</a></li> &nbsp;&nbsp;/&nbsp;
+                    <li><a href="#" onclick="reviewedPageNew()">已审阅（有更新）</a></li>/&nbsp;
+                    <li><a href="#" onclick="reviewedPage()">已审阅</a></li>
                 </ul>
             </div>
         </div>
@@ -55,32 +55,131 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </div>
 <!--error-->
 
-<div class="contact" id="review_content">
-    <div class="container">
-        <div class="contact-main">
-            <h1 class="myheadText" style="font-size:30px">论文名</h1>
-            <h1 class="myheadLabel">添加审稿意见</h1>
-            <h1 class="myheadLabel">查看意见</h1>
-        </div>
-    </div>
+<div class="contact" id="unReview">
 
-    <div class="container" style="background: lightgray;">
-        <div>
-            <h1 class="mytext" value="Paper" onclick="ShowPaperClick(this)">Paper</h1>
-            <button class="btn btn-primary btn-lg" style="float:right" onclick="addAdviceClick(this)">添加审稿意见</button>
-            <button class="btn btn-primary btn-lg" style="float:right" onclick="checkAdviceClick(this)">查看意见</button>
-        </div>
-    </div>
 </div>
+<div class="contact" id="reviewedNew">
+
+</div>
+<div class="contact" id="reviewed">
+
+</div>
+
+<div class="contact">
+
+</div>
+
 
 <script type="text/javascript">
     $(document).ready(function(){
-        var username=document.cookie.split(";")[0].split("=")[1];
-        var role=document.cookie.split(";")[1].split("=")[1];
+        unReviewPage();
+    })
+
+    function showPaperInfo(data, flag, tagID) {
+        var content = '';
+
+        var paperMsg = "作者: " + data.author + "  提交时间: " + data.submittime + "  关键词: ";
+
+        $.ajax({
+            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Keywords/?Keywords.match.id="+data.id,
+            type: "GET",
+            async: false,
+            success: function (keywordsdata) {
+                var keywords = eval(keywordsdata);
+
+                if (!jQuery.isEmptyObject(keywords)) {
+                    for (var i = 0; i < keywords.Keywords.length; i++) {
+                        paperMsg += keywords.Keywords[i].word;
+                    }
+                }
+                content += '\
+                        <div class="modal fade" id="Modal'+data.id+'" tabindex="-1" role="dialog"\
+                             aria-labelledby="myModalLabel" aria-hidden="true">\
+                            <div class="modal-dialog">\
+                                <div class="modal-content">\
+                                    <div class="modal-header">\
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>\
+                                        <h4 class="modal-title" id="myModalLabel">请选择评审意见</h4>\
+                                    </div>\
+                                    <div class="modal-body">\
+                                        <table align="center">\
+                                            <tr>\
+                                                <td><label for="name">审稿意见</label></td>\
+                                                <td><select id="advice'+data.id+'" class="form-control"> \
+                                                    <option value="Strong Accept">Strong Accept</option>\
+                                                    <option value="Accept">Accept</option>\
+                                                    <option value="Weak Accept">Weak Accept</option>\
+                                                    <option value="Borderline Paper">Borderline Paper</option>\
+                                                    <option value="Weak Reject">Weak Reject</option>\
+                                                    <option value="Reject">Reject</option>\
+                                                    <option value="Strong Reject">Strong Reject</option>\
+                                                </select></td>\
+                                            </tr>\
+                                            <tr>\
+                                                <td><label for="name">信任度</label></td>\
+                                                <td><select id="confidence'+data.id+'" class="form-control"> \
+                                                    <option value="Expert">Expert</option>\
+                                                    <option value="High">High</option>\
+                                                    <option value="Medium">Medium</option>\
+                                                    <option value="Low">Low</option>\
+                                                    <option value="Null">Null</option>\
+                                                </select></td>\
+                                            </tr>\
+                                        </table>\
+                                    </div>\
+                                    <div class="modal-footer">\
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>\
+                                        <button type="button" class="btn btn-primary" onclick="addAdvice('+data.id+')">提交</button>\
+                                    </div>\
+                                </div><!-- /.modal-content -->\
+                            </div><!-- /.modal-dialog -->\
+                        </div><!-- /.modal -->';
+
+                if (flag % 2 == 0) {
+                    content += '<div class="container" style="background: lightgray;">';
+
+                }
+                else {
+                    content += '<div class="container">';
+                }
+                content += '<div>\
+                        <div class="mytext">\
+                                    <textarea class="myTitleText myTitleTextAdd myTextArea" style="background: #f0f0f0;" \
+                                              onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</textarea> \
+                            <h1 class="myMsgText">'+paperMsg+'</h1>\
+                        </div>\
+                        <input type="button" class="mybutton" value="添加意见" onclick="addAdviceClick(' + data.id + ')">\
+                        <input type="button" class="mybutton" value="查看意见" onclick="checkAdviceClick(' + data.id + ')">\
+                    </div>\
+                </div>';
+
+                $(tagID).append(content);
+                $(tagID).show('slow');
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function unReviewPage() {
+        $("#reviewedNew").hide('slow');
+        $("#reviewed").hide('slow');
+
+        var username = localStorage.getItem("name");
+        var role = localStorage.getItem("role");
 
         var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
         myurl = myurl + "?User.name="+username;
-        //myurl = myurl + "?User.name=rev2";
+
+        var content = '<div class="container">\
+                            <div class="contact-main">\
+                                <h1 class="myheadText" style="font-size:30px">论文名</h1>\
+                                <h1 class="myheadLabel">添加意见</h1>\
+                                <h1 class="myheadLabel">查看意见</h1>\
+                            </div>\
+                        </div>';
+        $("#unReview").html(content);
+        $("#unReview").show('slow');
 
         $.ajax({
             url: myurl,
@@ -88,79 +187,173 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             success: function (data) {
                 var obj = eval(data);
                 var papers = obj.User[0].check;
+
+                var color = 0;
                 for (var i = 0; i < papers.length; i++) {
-                    showPaperInfo(papers[i], i);
+                    myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
+                    myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
+                    $.ajax({
+                        url: myurl,
+                        async:false,
+                        type: "GET",
+                        success: function (data2) {
+                            var obj2 = eval(data2);
+                            if (jQuery.isEmptyObject(obj2)) {
+                                showPaperInfo(papers[i], color,"#unReview");
+                                color++;
+                            }
+                        }
+                    });
+
                 }
             }
         });
-    })
+    }
 
-    function showPaperInfo(data, flag) {
-        var content = '\
-        <div class="modal fade" id="Modal'+data.id+'" tabindex="-1" role="dialog"\
-        aria-labelledby="myModalLabel" aria-hidden="true">\
-            <div class="modal-dialog">\
-                <div class="modal-content">\
-                    <div class="modal-header">\
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>\
-                        <h4 class="modal-title" id="myModalLabel">请选择评审意见</h4>\
-                    </div>\
-                    <div class="modal-body">\
-                          <table align="center">\
-                              <tr>\
-                                <td><label for="name">审稿意见</label></td>\
-                                <td><select id="advice'+data.id+'" class="form-control"> \
-                                    <option value="Strong Accept">Strong Accept</option>\
-                                    <option value="Accept">Accept</option>\
-                                    <option value="Weak Accept">Weak Accept</option>\
-                                    <option value="Borderline Paper">Borderline Paper</option>\
-                                    <option value="Weak Reject">Weak Reject</option>\
-                                    <option value="Reject">Reject</option>\
-                                    <option value="Strong Reject">Strong Reject</option>\
-                                </select></td>\
-                              </tr>\
-                              <tr>\
-                                  <td><label for="name">信任度</label></td>\
-                                  <td><select id="confidence'+data.id+'" class="form-control"> \
-                                    <option value="Expert">Expert</option>\
-                                    <option value="High">High</option>\
-                                    <option value="Medium">Medium</option>\
-                                    <option value="Low">Low</option>\
-                                    <option value="Null">Null</option>\
-                                  </select></td>\
-                              </tr>\
-                          </table>\
-                    </div>\
-                    <div class="modal-footer">\
-                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>\
-                        <button type="button" class="btn btn-primary" onclick="addAdvice('+data.id+')">提交</button>\
-                    </div>\
-                </div><!-- /.modal-content -->\
-            </div><!-- /.modal-dialog -->\
-        </div><!-- /.modal -->';
+    function reviewedPageNew(){
+        $("#unReview").hide('slow');
+        $("#reviewed").hide('slow');
 
-        if (flag % 2 == 1) {
-            content += '\
-            <div class="container" style="background: lightgray;">\
-                <div>\
-                    <h1 class="mytext" value="Paper" onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</h1>\
-                    <input type="button" class="mybutton" value="添加审稿意见" onclick="addAdviceClick(' + data.id + ')">\
-                    <input type="button" class="mybutton" value="查看意见" onclick="checkAdviceClick(' + data.id + ')">\
-                </div>\
-            </div>';
-        }
-        else {
-            content += '\
-            <div class="container" style="background: lightgray;">\
-                <div>\
-                    <h1 class="mytext" value="Paper" onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</h1>\
-                    <input type="button" class="mybutton" value="添加审稿意见" onclick="addAdviceClick(' + data.id + ')">\
-                    <input type="button" class="mybutton" value="查看意见" onclick="checkAdviceClick(' + data.id + ')">\
-                </div>\
-            </div>';
-        }
+        var username = localStorage.getItem("name");
+        var role = localStorage.getItem("role");
 
-        $("#review_content").append(content);
+        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
+        myurl = myurl + "?User.name="+username;
+
+        var content = '<div class="container">\
+                            <div class="contact-main">\
+                                <h1 class="myheadText" style="font-size:30px">论文名</h1>\
+                                <h1 class="myheadLabel">添加意见</h1>\
+                                <h1 class="myheadLabel">查看意见</h1>\
+                            </div>\
+                        </div>';
+        $("#reviewedNew").html(content);
+        $("#reviewedNew").show('slow')
+
+        $.ajax({
+            url: myurl,
+            type: "GET",
+            success: function (data) {
+                var obj = eval(data);
+                var papers = obj.User[0].check;
+                var color = 0;
+                for (var i = 0; i < papers.length; i++) {
+                    myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
+                    myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
+                    $.ajax({
+                        url: myurl,
+                        type: "GET",
+                        async:false,
+                        success: function (data2) {
+                            var obj2 = eval(data2);
+                            console.log(obj2);
+                            if (!jQuery.isEmptyObject(obj2)) {
+                                var commentTime = obj2.Comment[0].edittime;
+                                var cTimes = commentTime.split("-");
+                                console.log(cTimes);
+                                console.log(papers[i].id);
+
+                                var paperTime = papers[i].edittime;
+                                var pTimes = paperTime.split("-");
+                                console.log(pTimes);
+                                var f = 1;
+                                for (var j = 0; j < 3; j++) {
+                                    if (cTimes[j]+pTimes[j] < pTimes[j]+cTimes[j]) {
+                                        f = -1;
+                                        break;
+                                    }
+                                    else if (cTimes[j]+pTimes[j] > pTimes[j]+cTimes[j]){
+                                        f = 1;
+                                        breakl
+                                    }
+                                }
+
+                                console.log(f);
+
+                                if (f == -1) {
+                                    showPaperInfo(papers[i], color, "#reviewedNew");
+                                    color++;
+                                }
+                            }
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+
+    function reviewedPage() {
+        $("#unReview").hide('slow');
+        $("#reviewedNew").hide('slow');
+
+        var username = localStorage.getItem("name");
+        var role = localStorage.getItem("role");
+
+        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
+        myurl = myurl + "?User.name="+username;
+
+        var content = '<div class="container">\
+                            <div class="contact-main">\
+                                <h1 class="myheadText" style="font-size:30px">论文名</h1>\
+                                <h1 class="myheadLabel">添加意见</h1>\
+                                <h1 class="myheadLabel">查看意见</h1>\
+                            </div>\
+                        </div>';
+        $("#reviewed").html(content);
+        $("#reviewed").show('slow');
+
+        $.ajax({
+            url: myurl,
+            type: "GET",
+            success: function (data) {
+                var obj = eval(data);
+                var papers = obj.User[0].check;
+                var color = 0;
+                for (var i = 0; i < papers.length; i++) {
+                    myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
+                    myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
+                    $.ajax({
+                        url: myurl,
+                        type: "GET",
+                        async:false,
+                        success: function (data2) {
+                            var obj2 = eval(data2);
+                            console.log(obj2);
+                            if (!jQuery.isEmptyObject(obj2)) {
+                                var commentTime = obj2.Comment[0].edittime;
+                                var cTimes = commentTime.split("-");
+                                console.log(cTimes);
+                                console.log(papers[i].id);
+
+                                var paperTime = papers[i].edittime;
+                                var pTimes = paperTime.split("-");
+                                console.log(pTimes);
+                                var f = 1;
+                                for (var j = 0; j < 3; j++) {
+                                    if (cTimes[j]+pTimes[j] < pTimes[j]+cTimes[j]) {
+                                        f = -1;
+                                        break;
+                                    }
+                                    else if (cTimes[j]+pTimes[j] > pTimes[j]+cTimes[j]){
+                                        f = 1;
+                                        break;
+                                    }
+                                }
+
+                                console.log(f);
+
+                                if (f == 1) {
+                                    showPaperInfo(papers[i], color, "#reviewed");
+                                    color++;
+                                }
+                            }
+                        }
+                    });
+
+                }
+            }
+        });
     }
 </script>
 
@@ -180,7 +373,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var advice = $("#advice"+paperID).val();
         var confidence = $("#confidence"+paperID).val();
 
-        var username=document.cookie.split(";")[0].split("=")[1];
+        var username = localStorage.getItem("name");
 
         var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.name="+username;
         var userid;
@@ -208,7 +401,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     data: JSON.stringify(comment),
                     success: function (data) {
                         var obj = eval(data);
-                        document.cookie = "name="+uname;
                         window.location.href="contributor.html";
                     }
                 });
