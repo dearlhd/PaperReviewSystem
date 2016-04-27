@@ -192,7 +192,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 var color = 0;
                 for (var i = 0; i < papers.length; i++) {
                     if (papers[i].status != "FirstTrial") {
-                        console.log(papers[i].status);
                         continue;
                     }
                     myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
@@ -209,7 +208,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                             }
                         }
                     });
-
                 }
             }
         });
@@ -251,16 +249,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         async:false,
                         success: function (data2) {
                             var obj2 = eval(data2);
-                            console.log(obj2);
                             if (!jQuery.isEmptyObject(obj2)) {
                                 var commentTime = obj2.Comment[0].edittime;
                                 var cTimes = commentTime.split("-");
-                                console.log(cTimes);
-                                console.log(papers[i].id);
 
                                 var paperTime = papers[i].edittime;
                                 var pTimes = paperTime.split("-");
-                                console.log(pTimes);
                                 var f = 1;
                                 for (var j = 0; j < 3; j++) {
                                     if (cTimes[j]+pTimes[j] < pTimes[j]+cTimes[j]) {
@@ -272,8 +266,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                         breakl
                                     }
                                 }
-
-                                console.log(f);
 
                                 if (f == -1) {
                                     showPaperInfo(papers[i], color, "#reviewedNew");
@@ -289,7 +281,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     }
 
     function reviewedPage() {
-        console.log("reviewed");
         $("#unReview").hide('slow');
         $("#reviewedNew").hide('slow');
 
@@ -326,15 +317,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         success: function (data2) {
                             var obj2 = eval(data2);
                             if (!jQuery.isEmptyObject(obj2)) {
-                                console.log(obj2);
                                 var commentTime = obj2.Comment[0].edittime;
-                                console.log(obj2.Comment[0].edittime);
                                 var cTimes = commentTime.split("-");
-                                console.log(cTimes);
 
                                 var paperTime = papers[i].edittime;
                                 var pTimes = paperTime.split("-");
-                                console.log(pTimes);
+
                                 var f = 1;
                                 for (var j = 0; j < 3; j++) {
                                     if (cTimes[j]+pTimes[j] < pTimes[j]+cTimes[j]) {
@@ -364,7 +352,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script tpye="text/javascript">
     function checkAdviceClick(data) {
         var paperID = data;
-        console.log(paperID);
         var url = "viewAdvice.html?pid="+paperID;
         window.open(url,"","top=150,left=300,width=600,height=400");
     }
@@ -376,77 +363,106 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     function addAdvice(paperID) {
         var advice = $("#advice"+paperID).val();
         var confidence = $("#confidence"+paperID).val();
-
         var username = localStorage.getItem("name");
 
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.name="+username;
-        var userid;
-        var nowDate = new Date();
-        var edittime = nowDate.getFullYear() + "-" + nowDate.getMonth() + "-" + nowDate.getDate();
+        myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
+        myurl = myurl + "&Comment.commentwhat.id="+paperID;
         $.ajax({
             url: myurl,
+            async:false,
             type: "GET",
-            success: function (data) {
-                var obj = eval(data);
-                userid = obj.User[0].id;
+            success: function (data2) {
+                var obj2 = eval(data2);
+                if (!jQuery.isEmptyObject(cData)) {
+                    var oldcomment = eval(cData);
+                    oldcomment.commentwhat = {"id":paperID, "type":"Paper"};
+                    var uid = oldcomment.whocomment.id;
+                    oldcomment.whocomment = {"id": uid, "type":"User"};
+                    oldcomment.advice = advice;
+                    oldcomment.confidence = confidence;
+                    var nowDate = new Date();
+                    oldcomment.edittime = nowDate.getFullYear() + "-" + nowDate.getMonth() + "-" + nowDate.getDate();
 
-                var comment = {
-                    "reviewer":username,
-                    "advice":advice,
-                    "confidence":confidence,
-                    "edittime":edittime,
-                    "commentwhat":{"id":paperID, "type":"Paper"},
-                    "whocomment":{"id":userid, "type":"User"}
+                    $.ajax({
+                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/"+paperID,
+                        contentType: "application/json",
+                        type: "PUT",
+                        data: JSON.stringify(oldcomment),
+                        success: function (commentD) {
+
+                        }
+                    });
+                    return;
                 }
+                else {
+                    var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.name="+username;
+                    var userid;
+                    var nowDate = new Date();
+                    var edittime = nowDate.getFullYear() + "-" + nowDate.getMonth() + "-" + nowDate.getDate();
+                    $.ajax({
+                        url: myurl,
+                        type: "GET",
+                        success: function (data) {
+                            var obj = eval(data);
+                            userid = obj.User[0].id;
 
-                console.log(comment);
+                            var comment = {
+                                "reviewer":username,
+                                "advice":advice,
+                                "confidence":confidence,
+                                "edittime":edittime,
+                                "commentwhat":{"id":paperID, "type":"Paper"},
+                                "whocomment":{"id":userid, "type":"User"}
+                            }
 
-                $.ajax({
-                    url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/",
-                    contentType: "application/json",
-                    type: "POST",
-                    data: JSON.stringify(comment),
-                    success: function (data) {
-                        var obj = eval(data);
+                            $.ajax({
+                                url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/",
+                                contentType: "application/json",
+                                type: "POST",
+                                data: JSON.stringify(comment),
+                                success: function (data) {
+                                    var obj = eval(data);
 
-                        // 评论数量达到3个时送至终审
-                        $.ajax({
-                            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.commentwhat.id="+paperID,
-                            type: "GET",
-                            success: function (commentsData) {
-                                var comments = eval(commentsData);
-                                if (comments.Comment.length >= 3) {
+                                    // 评论数量达到3个时送至终审
                                     $.ajax({
-                                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.id=" + paperID,
+                                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.commentwhat.id="+paperID,
                                         type: "GET",
-                                        success: function (oldpaperdata) {
-                                            var oldPaper = eval(oldpaperdata).Paper[0];
-                                            console.log(oldPaper);
-                                            oldPaper.status = "FinalJudgement";
-                                            console.log(oldPaper);
-                                            $.ajax({
-                                                url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/"+paperID,
-                                                contentType: "application/json",
-                                                type: "PUT",
-                                                data: JSON.stringify(oldPaper),
-                                                success: function (newpaper) {
-                                                    console.log(eval(newpaper));
-                                                }
-                                            });
+                                        success: function (commentsData) {
+                                            var comments = eval(commentsData);
+                                            if (comments.Comment.length >= 3) {
+                                                $.ajax({
+                                                    url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.id=" + paperID,
+                                                    type: "GET",
+                                                    success: function (oldpaperdata) {
+                                                        var oldPaper = eval(oldpaperdata).Paper[0];
+                                                        oldPaper.status = "FinalJudgement";
+                                                        $.ajax({
+                                                            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/"+paperID,
+                                                            contentType: "application/json",
+                                                            type: "PUT",
+                                                            data: JSON.stringify(oldPaper),
+                                                            success: function (newpaper) {
+
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
                                         }
                                     });
                                 }
-                            }
-                        });
-                    }
-                });
+                            });
 
-                $("#Modal"+paperID).modal("hide");
 
+
+                        }
+                    });
+                }
             }
         });
 
 
+        $("#Modal"+paperID).modal("hide");
     }
 
 </script>
