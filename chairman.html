@@ -215,11 +215,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         for (var i = 0; i < usersID.length; i++) {
             $.ajax({
+                async:false,
                 url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/"+usersID[i],
                 type: "GET",
                 success: function (data) {
                     var obj = eval(data);
-
                     var userInfo = obj;
 
                     var checks = new Array();
@@ -238,7 +238,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                             var obj = eval(data);
                         }
                     });
-
                 }
             });
         }

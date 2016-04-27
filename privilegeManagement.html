@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>权限管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <!-- Custom Theme files -->
+    <link href="css/style.css" rel='stylesheet' type='text/css' />
+    <link href="css/myCss.css" rel='stylesheet' type='text/css' />
+    <script src="js/jquery-2.2.3.min.js"> </script>
+    <script src="js/bootstrap.min.js"> </script>
+    <script src="js/multiselect.min.js"></script>
+    <script src="js/sweet-alert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
+</head>
+<body>
+<div id="home" class="header">
+    <div class="header-bottom">
+        <div class="container">
+            <div class="logo">
+                <a href=""><h1>Paper<span>_System</span></h1></a>
+            </div>
+            <span class="menu"></span>
+            <div class="top-menu">
+                <ul>
+                    <nav>
+                        <li><a href="viewPaper.html">查阅论文</a></li>
+                        <li><a href="chairman.html">分配任务</a></li>
+                        <li><a href="finalJudgement.html">终审</a></li>
+                        <li><a href="privilegeManagement.html">权限管理</a></li>
+                        <li><a onclick="logOut();">退出</a></li>
+                    </nav>
+                </ul>
+            </div>
+
+            <!-- script for menu -->
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    <div class="banner two">
+        <div class="container">
+            <div class="pag-nav">
+                <ul class="p-list"></ul>
+            </div>
+        </div>
+    </div>
+    <br><br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <div class="input-group" style="width: 460px">
+                    <input type="text" class="form-control" id="searchWhat">
+                    <div class="input-group-btn">
+                        <select class="form-control" id="searchMethod" style="width: auto">
+                            <option value="name">按姓名查询</option>
+                            <option value="keywords">按特征查询</option>
+                        </select>
+                        <button type="button" class="btn btn-default" onclick="searchUser()">查询用户</button>
+                    </div><!-- /btn-group -->
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+            <br><br>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <div class="col-xs-5">
+                    <label>普通用户</label>
+                    <select name="from" id="multiselect" class="form-control" size="8" multiple="multiple"></select>
+                </div>
+                <div class="col-xs-2">
+                    <br>
+                    <button type="button" id="multiselect_rightAll" class="btn btn-block"> >> </button>
+                    <button type="button" id="multiselect_rightSelected" class="btn btn-block"> > </button>
+                    <button type="button" id="multiselect_leftSelected" class="btn btn-block"> < </button>
+                    <button type="button" id="multiselect_leftAll" class="btn btn-block"> << </button>
+                </div>
+                <div class="col-xs-5">
+                    <label>审稿人</label>
+                    <select name="to" id="multiselect_to" class="form-control" size="8" multiple="multiple"></select>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <button type="button" class="btn btn-primary btn-lg" onclick="changePrivilege()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        $('#multiselect').multiselect();
+    });
+
+    function searchUser(){
+        var arg = $("#searchWhat").val();
+        var searchType = $("#searchMethod option:selected").val();
+
+        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.";
+        if (searchType == "name") {
+            myurl += "name=(like)" + arg;
+        }
+        else {
+            myurl += "characteristic=(like)" + arg;
+        }
+        $.ajax({
+            url: myurl,
+            type: "GET",
+            success: function (data) {
+                var obj = eval(data);
+                var users = obj.User;
+                var writerList = "";
+                var reviewerList = "";
+                for (var i = 0; i < users.length; i++) {
+                    if (users[i].role == "writer") {
+                        writerList +='<option value=\"'+users[i].id+'\">'+users[i].name+'</option>';
+                    }
+                    else if (users[i].role == "reviewer") {
+                        reviewerList += '<option value=\"'+users[i].id+'\">'+users[i].name+'</option>';
+                    }
+                }
+                $("#multiselect").html(writerList);
+                $("#multiselect_to").html(reviewerList);
+            }
+        });
+    }
+
+    function changePrivilege() {
+        var newReviewerList=document.getElementById("multiselect_to").childNodes;
+        var newReviewers = new Array();
+
+        for (var i = 0; i < newReviewerList.length; i++) {
+            newReviewers[i] = newReviewerList[i].value;
+        }
+
+        var newWriterList=document.getElementById("multiselect").childNodes;
+        var newWriters = new Array();
+
+        for (var i = 0; i < newWriterList.length; i++) {
+            newWriters[i] = newWriterList[i].value;
+        }
+
+        console.log(newReviewers);
+        console.log(newWriters);
+
+        for (var i = 0; i < newReviewers.length; i++) {
+            $.ajax({
+                async:false,
+                url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.id="+newReviewers[i],
+                type: "GET",
+                success: function (data) {
+                    var obj = eval(data);
+                    var userInfo = obj.User[0];
+                    userInfo.role = "reviewer";
+                    var checks = new Array();
+                    for (var j = 0; j < userInfo.check.length; j++) {
+                        checks[j] = {"id":userInfo.check[j].id};
+                    }
+                    userInfo.check = checks;
+
+                    $.ajax({
+                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/"+userInfo.id,
+                        contentType: "application/json",
+                        type: "PUT",
+                        data: JSON.stringify(userInfo),
+                        success: function (data) {
+                            var obj = eval(data);
+                        }
+                    });
+                }
+            });
+        }
+
+        for (var i = 0; i < newWriters.length; i++) {
+            $.ajax({
+                async:false,
+                url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.id="+newWriters[i],
+                type: "GET",
+                success: function (data) {
+                    var obj = eval(data);
+                    var userInfo = obj.User[0];
+                    userInfo.role = "writer";
+                    var checks = new Array();
+                    for (var j = 0; j < userInfo.check.length; j++) {
+                        checks[j] = {"id":userInfo.check[j].id};
+                    }
+                    userInfo.check = checks;
+
+                    console.log(userInfo);
+
+                    $.ajax({
+                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/"+userInfo.id,
+                        contentType: "application/json",
+                        type: "PUT",
+                        data: JSON.stringify(userInfo),
+                        success: function (data) {
+                            var obj = eval(data);
+                        }
+                    });
+                }
+            });
+        }
+        sweetAlert("", "修改成功！", "success");
+    }
+</script>
+
+</body>
+</html>
