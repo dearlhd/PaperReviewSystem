@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Reviewer</title>
+    <title>Final Judgement</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template,
@@ -27,7 +27,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 <ul>
                     <nav>
                         <li><a href="viewPaper.html">查阅论文</a></li>
-                        <li><a href="reviewer.html">审稿</a></li>
+                        <li><a href="chairman.html">分配任务</a></li>
+                        <li><a href="finalJudgement.html">终审</a></li>
+                        <li><a href="privilegeManagement.html">权限管理</a></li>
                         <li><a onclick="logOut();">退出</a></li>
                     </nav>
                 </ul>
@@ -52,24 +54,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </div>
 <!--error-->
 
-<div class="contact" id="unReview">
-
-</div>
-<div class="contact" id="reviewedNew">
-
-</div>
-<div class="contact" id="reviewed">
-
-</div>
-
-<div class="contact">
+<div class="contact" id="finalJudgement">
 
 </div>
 
 
 <script type="text/javascript">
     $(document).ready(function(){
-        unReviewPage();
+        finalJudgementPage();
     })
 
     function showPaperInfo(data, flag, tagID) {
@@ -162,15 +154,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </script>
 
 <script type="text/javascript">
-    function unReviewPage() {
-        $("#reviewedNew").hide('slow');
-        $("#reviewed").hide('slow');
-
+    function finalJudgementPage() {
         var username = localStorage.getItem("name");
         var role = localStorage.getItem("role");
-
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
-        myurl = myurl + "?User.name="+username;
 
         var content = '<div class="container">\
                             <div class="contact-main">\
@@ -179,179 +165,20 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 <h1 class="myheadLabel">查看意见</h1>\
                             </div>\
                         </div>';
-        $("#unReview").html(content);
-        $("#unReview").show('slow');
+        $("#finalJudgement").html(content);
+        $("#finalJudgement").show('slow');
+
+        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.status=FinalJudgement";
 
         $.ajax({
             url: myurl,
             type: "GET",
             success: function (data) {
                 var obj = eval(data);
-                var papers = obj.User[0].check;
-
+                var papers = obj.Paper;
                 var color = 0;
-                for (var i = 0; i < papers.length; i++) {
-                    myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
-                    myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
-                    $.ajax({
-                        url: myurl,
-                        async:false,
-                        type: "GET",
-                        success: function (data2) {
-                            var obj2 = eval(data2);
-                            if (jQuery.isEmptyObject(obj2)) {
-                                showPaperInfo(papers[i], color,"#unReview");
-                                color++;
-                            }
-                        }
-                    });
-
-                }
-            }
-        });
-    }
-
-    function reviewedPageNew(){
-        $("#unReview").hide('slow');
-        $("#reviewed").hide('slow');
-
-        var username = localStorage.getItem("name");
-        var role = localStorage.getItem("role");
-
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
-        myurl = myurl + "?User.name="+username;
-
-        var content = '<div class="container">\
-                            <div class="contact-main">\
-                                <h1 class="myheadText" style="font-size:30px">论文名</h1>\
-                                <h1 class="myheadLabel">添加意见</h1>\
-                                <h1 class="myheadLabel">查看意见</h1>\
-                            </div>\
-                        </div>';
-        $("#reviewedNew").html(content);
-        $("#reviewedNew").show('slow')
-
-        $.ajax({
-            url: myurl,
-            type: "GET",
-            success: function (data) {
-                var obj = eval(data);
-                var papers = obj.User[0].check;
-                var color = 0;
-                for (var i = 0; i < papers.length; i++) {
-                    myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
-                    myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
-                    $.ajax({
-                        url: myurl,
-                        type: "GET",
-                        async:false,
-                        success: function (data2) {
-                            var obj2 = eval(data2);
-                            console.log(obj2);
-                            if (!jQuery.isEmptyObject(obj2)) {
-                                var commentTime = obj2.Comment[0].edittime;
-                                var cTimes = commentTime.split("-");
-                                console.log(cTimes);
-                                console.log(papers[i].id);
-
-                                var paperTime = papers[i].edittime;
-                                var pTimes = paperTime.split("-");
-                                console.log(pTimes);
-                                var f = 1;
-                                for (var j = 0; j < 3; j++) {
-                                    if (cTimes[j]+pTimes[j] < pTimes[j]+cTimes[j]) {
-                                        f = -1;
-                                        break;
-                                    }
-                                    else if (cTimes[j]+pTimes[j] > pTimes[j]+cTimes[j]){
-                                        f = 1;
-                                        breakl
-                                    }
-                                }
-
-                                console.log(f);
-
-                                if (f == -1) {
-                                    showPaperInfo(papers[i], color, "#reviewedNew");
-                                    color++;
-                                }
-                            }
-                        }
-                    });
-
-                }
-            }
-        });
-    }
-
-    function reviewedPage() {
-        console.log("reviewed");
-        $("#unReview").hide('slow');
-        $("#reviewedNew").hide('slow');
-
-        var username = localStorage.getItem("name");
-        var role = localStorage.getItem("role");
-
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
-        myurl = myurl + "?User.name="+username;
-
-        var content = '<div class="container">\
-                            <div class="contact-main">\
-                                <h1 class="myheadText" style="font-size:30px">论文名</h1>\
-                                <h1 class="myheadLabel">添加意见</h1>\
-                                <h1 class="myheadLabel">查看意见</h1>\
-                            </div>\
-                        </div>';
-        $("#reviewed").html(content);
-        $("#reviewed").show('slow');
-
-        $.ajax({
-            url: myurl,
-            type: "GET",
-            success: function (data) {
-                var obj = eval(data);
-                var papers = obj.User[0].check;
-                var color = 0;
-                for (var i = 0; i < papers.length; i++) {
-                    myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
-                    myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
-                    $.ajax({
-                        url: myurl,
-                        type: "GET",
-                        async:false,
-                        success: function (data2) {
-                            var obj2 = eval(data2);
-                            if (!jQuery.isEmptyObject(obj2)) {
-                                console.log(obj2);
-                                var commentTime = obj2.Comment[0].edittime;
-                                console.log(obj2.Comment[0].edittime);
-                                var cTimes = commentTime.split("-");
-                                console.log(cTimes);
-
-                                var paperTime = papers[i].edittime;
-                                var pTimes = paperTime.split("-");
-                                console.log(pTimes);
-                                var f = 1;
-                                for (var j = 0; j < 3; j++) {
-                                    if (cTimes[j]+pTimes[j] < pTimes[j]+cTimes[j]) {
-                                        f = -1;
-                                        break;
-                                    }
-                                    else if (cTimes[j]+pTimes[j] > pTimes[j]+cTimes[j]){
-                                        f = 1;
-                                        break;
-                                    }
-                                }
-
-                                if (f == 1) {
-                                    showPaperInfo(papers[i], color, "#reviewed");
-                                    color++;
-                                }
-                            }
-                        }
-                    });
-
-                }
+                showPaperInfo(papers[i], color,"#finalJudgement");
+                color++;
             }
         });
     }
@@ -377,8 +204,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.name="+username;
         var userid;
-        var nowDate = new Date();
-        var edittime = nowDate.getFullYear() + "-" + nowDate.getMonth() + "-" + nowDate.getDate();
         $.ajax({
             url: myurl,
             type: "GET",
@@ -390,7 +215,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     "reviewer":username,
                     "advice":advice,
                     "confidence":confidence,
-                    "edittime":edittime,
                     "commentwhat":{"id":paperID, "type":"Paper"},
                     "whocomment":{"id":userid, "type":"User"}
                 }
@@ -404,36 +228,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     data: JSON.stringify(comment),
                     success: function (data) {
                         var obj = eval(data);
-
-                        // 评论数量达到3个时送至终审
-                        $.ajax({
-                            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.commentwhat.id="+paperID,
-                            type: "GET",
-                            success: function (commentsData) {
-                                var comments = eval(commentsData);
-                                if (comments.Comment.length >= 3) {
-                                    $.ajax({
-                                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.id=" + paperID,
-                                        type: "GET",
-                                        success: function (oldpaperdata) {
-                                            var oldPaper = eval(oldpaperdata).Paper[0];
-                                            console.log(oldPaper);
-                                            oldPaper.status = "FinalJudgement";
-                                            console.log(oldPaper);
-                                            $.ajax({
-                                                url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/"+paperID,
-                                                contentType: "application/json",
-                                                type: "PUT",
-                                                data: JSON.stringify(oldPaper),
-                                                success: function (newpaper) {
-                                                    console.log(eval(newpaper));
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                        window.location.href="contributor.html";
                     }
                 });
 
@@ -441,7 +236,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
             }
         });
-
 
     }
 
