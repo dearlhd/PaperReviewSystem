@@ -1,0 +1,274 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>queryPaper</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<link href="css/querybootstrap.css" rel='stylesheet' type='text/css' />
+<!-- Custom Theme files -->
+<link href="css/style.css" rel='stylesheet' type='text/css' />	
+<link href="css/myCss.css" rel='stylesheet' type='text/css' />
+<script src="js/jquery-2.2.3.min.js"> </script>
+<script src="js/bootstrap.min.js"> </script>
+
+</head>
+<body>
+	<!--start-home-->
+	<div id="home" class="header">
+		<div class="header-bottom">
+			<div class="container">
+				<div class="logo">
+					<a href="index.html"><h1>Paper<span>_System</span></h1></a>
+				</div>
+				<span class="menu"></span>
+				<div class="top-menu">
+					<ul>
+					<nav>
+            <li><a></a></li> 
+					</nav>
+					</ul>
+				</div>
+				
+			<!-- script for menu -->
+				<div class="clearfix"></div>
+			</div>
+		</div>
+
+	<div class="banner two">
+		<div class="container">	
+		  <div class="pag-nav">
+				<ul class="p-list">
+          <li>搜索方式:</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li><a value="c_keyword" id="a_1" onclick="chooseClick(this);">关键词</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li><a value="c_author" id="a_2" onclick="chooseClick(this);">作者</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li><a value="c_year" id="a_3" onclick="chooseClick(this);">发表年份</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li><a value="c_title" id="a_4" onclick="chooseClick(this);">标题</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				</ul>
+			</div>
+
+		</div>   
+	</div>
+	</div>
+
+<div class="contact">
+  <div class = "container">
+    <fieldset>
+     <div style="float:left;">
+        <div class="input-append input-prepend">
+          <span class="add-on myBSspan"><i class="icon-search"></i></span>
+          <input type="text" name="s" id="search" placeholder="Search" value="" class="placeholder myBSinput">
+          <button type="submit" class="btn btn-primary myBSbtn" onclick="queryPaperClick(this);"><i class="icon-search icon-white"></i></button>     
+        </div>
+      </div>
+    </fieldset>
+  </div>
+</div>
+ 
+<div class="contact" id="my_contact">
+
+</div>
+
+<div class="contact">
+</div>
+
+</body>
+</html>
+
+
+<script>
+    var cnt = 0;
+    var username;
+    var searchType = "c";
+    var layout = "";
+    var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
+
+    function display_alert()
+    {
+      alert("I am an alert box!!")
+    }
+
+    function contentClear(){
+      layout = "";
+      $("#my_contact").html(layout);
+    }
+
+    function ShowPaperClick(obj){
+      //alert(obj);
+      //alert($(obj).text());
+      window.open( "viewPaper.html?pid=" + obj, "", "top=150, left=250, width=1400, height=800");
+    }
+
+    function addPaper(obj){
+      // alert(obj.title);
+      console.log(obj);
+
+      var keywords = "";
+      cnt++;
+      var textColor = "";
+      var textHeight = "mytextHeight_" + ((Math.floor((obj.title.length - 1) / 50)) + 1);
+      var PaperMsg = "";
+     // alert(obj.id);
+      $.ajax({
+        url: myurl + "Keywords/?Keywords.match.id=" + obj.id,
+        type : "GET",
+        async : false,
+        success: function(_msg){
+          var _obj = eval(_msg);
+          if (jQuery.isEmptyObject(_obj)){
+            //console.log("fuck");
+            return false;
+          }
+          var k = _obj.Keywords.length;
+          PaperMsg = ("作者: " + obj.author + "  提交时间: " + obj.submittime + "  关键词: ");
+          for (var j = 0; j < k; ++j) {
+            PaperMsg += (_obj.Keywords[j].word + " ");
+          }
+        }
+      });
+
+     //console.log(PaperMsg);
+      if (cnt % 2 == 1) 
+        textColor = "style='background: #d9d9d9;'";
+      else textColor = "style='background: #f0f0f0;'";
+      layout = "" +
+        ("<div class='container'" + textColor + ">" + 
+          "<div>" +
+            "<div class='mytext mytestFill'>" +
+              "<textarea readonly='readonly' class='myTitleText myTitleTextAdd myTextArea " + textHeight + "'" + textColor + " onclick='ShowPaperClick(" + obj.id + ")'>" + obj.title + "</textarea>" +
+              "<h1 class='myMsgText'>" + PaperMsg + "</h1>" + 
+            "</div>" +
+          "</div>" + 
+        "</div>");
+
+      $("#my_contact").append(layout);
+                      //console.log(PaperMsg);
+             
+    }
+
+    function chooseClick(obj){
+        for (var i = 1; i <= 4; ++i)
+          $("#a_" + i).css("color", "black");
+        $(obj).css("color", "white");
+        searchType = $(obj).html();
+        //alert($("#search_text").parent().children().eq(1).next().html());
+        //alert($("#search_text").html());
+        //$("#search_text").parent().css("placeholder", "请按  " + searchType + "  输入搜索内容");
+    }
+
+    function queryPaperClick(obj)
+    {
+      layout = "";
+      cnt = 0;
+      if (searchType == "c")
+        alert("请选择查询方式");
+      else{
+        //console.log("fuck");
+        contentClear();
+        switch (searchType)
+        {
+          case "关键词" :
+            $.ajax({
+              url : myurl + "Keywords/?Keywords.word=" + $("#search").val(),
+              type : "GET",
+              success : function(msg){
+                var obj = eval(msg);
+                if (jQuery.isEmptyObject(obj)){
+                  return false;
+                }
+                var keywords_array = new Array();
+                var len = obj.Keywords.length;
+                for (var i = 0; i < len; ++i){
+                  //addPaper(obj.Keywords[i].match.id);
+                  keywords_array[i] = obj.Keywords[i].match.id;                 
+                }
+                for (var i = 0; i < len - 1; ++i){
+                  for (var j = i + 1; j < len; ++j){
+                    if (keywords_array[i] < keywords_array[j]){
+                      var tmp = keywords_array[i];
+                      keywords_array[i] = keywords_array[j];
+                      keywords_array[j] = tmp;
+                    }
+                  }
+                }
+                keywords_array[len++] = -1;
+                for (var i = 0; i < len - 1; ++i){
+                  if (keywords_array[i] != keywords_array[i + 1]){
+                    //addPaper(keywords_array[i]);
+                    //console.log(keywords_array[i]);
+                    $.ajax({
+                      url : myurl + "Paper/?Paper.id=" + keywords_array[i],
+                      async : false,
+                      type : "GET",
+                      success : function(_msg){
+                        var _obj = eval(_msg);
+                        if (jQuery.isEmptyObject(_obj)){
+                          return false;
+                        }
+                        addPaper(_obj.Paper[0]);
+                      }
+                    });
+                  }
+                }
+              }
+            });
+            break;
+          case "作者" :
+            //console.log($("#search").val());
+            $.ajax({
+              url : myurl + "Paper/?Paper.author=" + $("#search").val(),
+              type : "GET",
+              success : function(msg){
+                var obj = eval(msg);
+                if (jQuery.isEmptyObject(obj)){
+                  return false;
+                }
+                //alert("fuck");
+                for (var i = 0; i < obj.Paper.length; ++i){
+                  addPaper(obj.Paper[i]);
+                }
+              }
+            });
+            break;
+          case "发表年份" :
+            $.ajax({
+              url : myurl + "Paper/?Paper.submittime=" + $("#search").val(),
+              type : "GET",
+              success : function(msg){
+                var obj = eval(msg);
+                if (jQuery.isEmptyObject(obj)){
+                  return false;
+                }
+                for (var i = 0; i < obj.Paper.length; ++i){
+                  addPaper(obj.Paper[i]);
+                }
+              }
+            });
+            break;
+          case "标题" :
+            $.ajax({
+              url : myurl + "Paper/?Paper.title=(like)" + $("#search").val(),
+              type : "GET",
+              success : function(msg){
+                var obj = eval(msg);
+                if (jQuery.isEmptyObject(obj)){
+                  return false;
+                }
+                for (var i = 0; i < obj.Paper.length; ++i){
+                  addPaper(obj.Paper[i]);
+                }
+              }
+            });
+            break;
+          default: 
+            break;
+        }
+      }
+    }
+
+    $(document).ready(function(){
+    });
+
+</script>

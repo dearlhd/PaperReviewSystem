@@ -54,7 +54,7 @@
 .myTitleText
 {
 	font-size: 25px;
-	margin-top: 10px;
+	margin-top: 5px;
 	text-align: left;
 }
 
@@ -62,14 +62,13 @@
 {
 	width: 100%;
 	border: none;
-	font-weight:bold;
+	font-weight: bold;
 	background-color: white;
 }
 
 .myMsgText
 {
 	font-size: 15px;
-	margin-top: 10px;
 	text-align: left;
 	margin-bottom: 5px;
 }
@@ -135,8 +134,80 @@
 
 .myTextArea
 {
-	overflow:hidden;
+	overflow: hidden;
 	resize : none;
 	background-attachment: fixed;   
 	background-repeat: no-repeat; 
+	border-style: none;
+	height: 65px;
+	border-width: 0;
+	padding: 0;
+	margin: 0;
+	border-style : none;
+	cursor: pointer;
+}
+
+.myLiA
+{
+	font-weight: bold;
+	font-size: 35px;
+	font-family: FangSong;
+}
+
+.myLiA:hover
+{
+	opacity: 1;
+}
+
+.show-grid
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    background-color: rgba(86, 61, 124, .15);
+    border: 1px solid rgba(86, 61, 124, .2);
+}
+
+.myBSbtn
+{
+	width: 50px;
+}
+
+.myBSspan
+{
+	width: 50px;
+}
+
+.myBSinput
+{
+	width: 600px;
+}
+
+.mytestFill
+{
+	width: 80%;
+}
+
+.mycontainerFill
+{
+	padding-top: 4px;
+    padding-right: 6px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+}	
+
+.mytextHeight_1
+{
+	height : 35px;
+}
+
+.mytextHeight_2
+{
+	height : 70px;
+}
+
+.mytextHeight_3
+{
+	height : 105px;
 }

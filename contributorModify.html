@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>contributorDissert</title>
+<title>contributorModify</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
@@ -42,7 +42,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 	<div class="banner two">
 		<div class="container">	
-		<div class="pag-nav">
+		  <div class="pag-nav">
 				<ul class="p-list">
 					<li><a href="index.html"></a></li>
 				</ul>
@@ -63,14 +63,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 
 <script>
-    var cnt = 0;
-    var username;
+    var my_obj;
+    var paperId;
     var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
-
-    function display_alert()
-    {
-      alert("I am an alert box!!")
-    }
 
     function SubmitPaperClick(){
       //alert($("#paper").html());
@@ -80,47 +75,67 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
       var summary = $("#summary").val();
       var content = $("#content");
       var keywords = $("#keywords").val();
-      var submittime;
+      var submittime = my_obj.Paper[0].submittime;
       var myDate = new Date();
-      submittime = myDate.getFullYear() + "-" + myDate.getMonth() + "-" + myDate.getDate(); 
-      //alert(submittime);
-      var status = "Delivered";
+      var edittime = myDate.getFullYear() + "-" + myDate.getMonth() + "-" + myDate.getDate();
+      paperId = my_obj.Paper[0].id;
+
+      var status = "Delivered";//////////////////////////////////////////////////////////////////////////////////update
       if ((title != null) && (unit != null) && (address != null) && (summary != null) && (keywords != null) && (content != null))//not null
       {
+        $.ajax({
+          url: myurl + "Keywords/?Keywords.match.id=" + paperId,
+          type : "GET",
+          async : false,
+          success : function(msg){
+          var obj = eval(msg);    
+            if (jQuery.isEmptyObject(obj)){
+              return false;
+            }
+           // console.log("IN 1");
+            for (var i = 0; i < obj.Keywords.length; ++i){
+              console.log(obj.Keywords[i].id);
+              $.ajax({
+                url : myurl + "Keywords/" + obj.Keywords[i].id,
+                async : false,
+                type : "DELETE",
+                success : function(){
+                  //console.log("In 2");
+                }
+              });
+            }
+         }
+        });
+
         var paperInfo={
             ////////////////////////
           "title" : title,
-          "author" : username,
+          "author" : my_obj.Paper[0].author,
           "unit" : unit,
           "address" : address,
           "summary" : summary,
           "submittime" : submittime,
-          "edittime" : submittime,
+          "edittime" : edittime,
           "status" :　status
         };
         //alert(username);
         //alert(submittime);
         $.ajax({
-          url: myurl + "Paper/",
+          url: myurl + "Paper/" + paperId,
           contentType: "application/json",
-          type: "POST",
+          type: "PUT",
           async : false,
           data: JSON.stringify(paperInfo),
           success: function(msg){
-          //  alert("submit successful");
-            //////////////////////////herf paper
-            //do paperfile 
-            var obj = eval(msg);
-            var paperId = obj.id;
+              var obj = eval(msg);
+              var paperId = obj.id;
             //alert(paperId);
+           // console.log("In put paper");
 
-
-            var files = $(":file")[0].files;
+              var files = $(":file")[0].files;
             //alert(files);
-            console.log(files);
               var formData = new FormData();
               formData.append("file", files[0]);
-              console.log(formData);
               $.ajax({
                   url: myurl + "Paper/" + paperId,
                   type: "POST",
@@ -130,7 +145,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                   processData: false,
                   success: function(data){
                       //console.log(data);
-                      //alert("add file");
+                     // alert("add file");
                   } 
               });
               //do keywords
@@ -139,12 +154,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
               //alert(keylist.length);
               
               for (var i = 0; i < keylist.length; ++i){
-                
                 var keywordsInfo={
                   "word" : keylist[i],
                   "match" : {"id" : paperId, "type" : "Paper"}
                 };
-
+                console.log(keywordsInfo.word);
                 $.ajax({
                   url: myurl + "Keywords/",
                   contentType: "application/json",
@@ -152,7 +166,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                   type: "POST",
                   data: JSON.stringify(keywordsInfo),
                   success: function(msg){
-                   // alert("add keywords" + keylist[i]);
+                    //alert("add keywords" + keylist[i]);
+                    //console.log("In Keywords" + keywordsInfo.word);
                   }
                 });
               
@@ -165,31 +180,63 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         alert("以上几项不能为空!");
         return false;
       }
-      if (confirm("论文添加成功！") < 2)
+      if (confirm("论文修改成功！") < 2)
       {
         //alert("gogogo");
-   //     window.location.href = "contributor.html";
+        window.location.href = "contributor.html";
       }
 
     }
 
-    function DissertClick(){
+    function ModifyClick(){
 
       /*$("#my_contact").html("<h1 class='myheadText'>Plllaper</h1><h1 class='myheadLabel'>Modllllify</h1><h1 class='myheadLabel'>Advillce</h1><h1 class='myheadLabel'>Status</h1>");
       alert($("#my_contact").html());*/
-      $("#my_contact").hide();
-      $("#my_contact").html("" +
-        "<div class='container' id='paper'>" + 
-          "<input class='myinput' id='title' maxlength='150' placeholder='标题'>" + 
-          "<input class='myinput' id='unit' placeholder='作者单位'>" + 
-          "<input class='myinput' id='address' placeholder='通讯地址'>" + 
-          "<input class='myinput' id='keywords' placeholder='关键词(用分号隔开)'>" +
-          "<textarea class='myinput' style='height:300px;' id='summary' placeholder='摘要'></textarea>" +  
-          "<input type='file' class='myinput' style='width:40%' name='file' id='content' placeholder='上传正文pdf'>" + 
-          "<input type='button' class='mybutton' style='float:none;' value='提交' onclick='SubmitPaperClick();'>" +
-        "</div>"
-      );
-      $("#my_contact").show(1000);
+      var keywords = "";
+
+      $.ajax({
+        url : myurl + "Paper/?Paper.id=" + paperId,
+        type : "GET",
+        success : function(msg){
+          my_obj = eval(msg);
+          if (jQuery.isEmptyObject(my_obj)){
+            return false;
+          }
+
+         // console.log("In there");
+        //  console.log(my_obj.Paper[0].title);
+
+          $.ajax({
+            url: myurl + "Keywords/?Keywords.match.id=" + my_obj.Paper[0].id,
+            type : "GET",
+            success : function(_msg){
+              var _obj = eval(_msg);    
+              if (jQuery.isEmptyObject(_obj)){
+                return false;
+              }
+              for (var i = 0; i < _obj.Keywords.length; ++i)
+                if (i < (_obj.Keywords.length - 1))
+                  keywords += (_obj.Keywords[i].word + ";");
+                else keywords += _obj.Keywords[i].word;
+                //optimize
+
+              $("#my_contact").html("" +
+                "<div class='container' id='paper'>" + 
+                  "<input class='myinput' id='title' placeholder='标题' value='" + my_obj.Paper[0].title + "'>" + 
+                  "<input class='myinput' id='unit' placeholder='作者单位' value='" + my_obj.Paper[0].unit + "'>" + 
+                  "<input class='myinput' id='address' placeholder='通讯地址' value='" + my_obj.Paper[0].address + "'>" + 
+                  "<input class='myinput' id='keywords' placeholder='关键词(用分号隔开)' value='" + keywords + "'>" +
+                  "<textarea class='myinput' style='height:300px;' id='summary' placeholder='摘要'>" + my_obj.Paper[0].summary + "</textarea>" +  
+                  "<input type='file' class='myinput' style='width:40%' name='file' id='content' placeholder='上传正文pdf'>" + 
+                  "<input type='button' class='mybutton' style='float:none;'' value='提交'' onclick='SubmitPaperClick();''>" +
+                "</div>"
+              );
+            }
+          });
+        }
+
+      });
+
     }
 
     function MyPaperClick(){
@@ -204,10 +251,24 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
       window.open("queryPaper.html", "", "");
     }
 
+    function GetRequest() {
+      var url = location.search; //获取url中"?"符后的字串
+      var theRequest = new Object();
+      if (url.indexOf("?") != -1) {
+        var str = url.substr(1);
+        strs = str.split("&");
+        for(var i = 0; i < strs.length; i ++) {
+          theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+        }
+      }
+      return theRequest;
+    }
+
     $(document).ready(function(){
-      //Do MyPaper
-      username = localStorage.getItem("name");
-      DissertClick();
+      var Request = new Object();
+      Request = GetRequest();
+      paperId = Request['pid'];
+      ModifyClick();
     });
 
 </script>

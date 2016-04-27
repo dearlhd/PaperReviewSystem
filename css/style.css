@@ -89,6 +89,7 @@ nav a:focus {
   height: 37px;
   background: #fff;
   margin: 0 auto;
+  cursor: pointer;
 }
 .top-menu ul li a:hover,.top-menu ul li a.active{
 	background:#1fadc5;
@@ -430,7 +431,9 @@ ul.p-list li a {
   text-transform: uppercase;
   font-weight: 400;
   text-decoration: none;
+  cursor: pointer;
 }
+
 ul.p-list li {
   display: inline-block;
 }

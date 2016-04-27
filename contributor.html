@@ -45,7 +45,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<div class="container">	
 		<div class="pag-nav">
 				<ul class="p-list">
-			   	<li><a href="index.html"></a></li> 
+			   	<li><a href="#"></a></li> 
 				</ul>
 			</div>
 
@@ -78,18 +78,25 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   	}
 
   	function ModifyPaperClick(obj){
-  		alert();
+  		//alert();
+      window.location.href = "contributorModify.html?pid=" + obj;
   	}
 
     function downloadPaperClick(obj){
-      $.ajax({
+      alert(obj);
+      window.open("http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj, "", "");
+     // respons.setHeader("Access-Control-Allow-Origin", "*");
+    /*  $.ajax({
         url : "http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj,
+        async : false,
         type : "GET",
         success : function(msg){
-          console.log(msg);
+          //console.log(msg);
+          alert("yes");
           ///////////////////////////////////////////////////////////////////////////////////////////
+          ///fuckkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
         }
-      });
+      });*/
     }
 
   	function AdvicePaperClick(obj){
@@ -98,7 +105,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   	}
 
     function QueryClick(){
-
+      window.open("queryPaper.html", "", "");
     }
 
   	function DissertClick(){
@@ -107,6 +114,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
   	function MyPaperClick(){
   		//get username
+      $("#my_contact").hide();
   		var layout = "";
   		layout = 
   			"<div class='container'>" +
@@ -118,10 +126,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				"</div>" +
 			"</div>";
 
-		$("#my_contact").html(layout);
+		  $("#my_contact").html(layout);
 
   		$.ajax({
   				url: myurl + "Paper/?Paper.author=" + username,
+          //url: myurl + "Paper/?Paper.id=1461574048496",
   				//contentType: "application/json",
   				type: "GET",
   				success: function(msg){
@@ -132,12 +141,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   					//console.log(obj.Paper.length);
   					for (var i = 0; i < obj.Paper.length; ++i){
   					//for (var i = 0; i < 2; ++i){
-  					//	console.log(i);
-  						
-
+  						//console.log(obj.Paper[i].id);
   					//	alert(obj.Paper[i].id + "  " + obj.Paper[i].title);
-
-  					
   						//alert(PaperMsg);
   						
   						$.ajax({
@@ -150,12 +155,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   								//console.log(obj.Paper[i].id);
   								var _obj = eval(_msg);
   								if (jQuery.isEmptyObject(_obj)){
+                    //console.log(123123);
   									return false;
   								}
 
   								var k = _obj.Keywords.length;
 								  var PaperMsg = "";
-
+                 // console.log(k);
 
 
   								PaperMsg += ("作者: " + obj.Paper[i].author + "  提交时间: " + obj.Paper[i].submittime + "  关键词: ");
@@ -170,6 +176,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   								cnt++;
   								layout = "";
                   var textColor = "";
+                  var textHeight = "mytextHeight_" + ((Math.floor((obj.Paper[i].title.length - 1) / 50)) + 1);
   								if (cnt % 2 == 1) 
                     textColor = "style='background: #d9d9d9;'";
                   else textColor = "style='background: #f0f0f0;'";
@@ -177,7 +184,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								  layout +=
 								  	("<div>" +
 									   	"<div class='mytext'>" +
-									  		"<textarea class='myTitleText myTitleTextAdd myTextArea'" + textColor + " onclick='ShowPaperClick(" + obj.Paper[i].id + ")'>" + obj.Paper[i].title + "</textarea>" +
+									  		"<textarea readonly='readonly' class='myTitleText myTitleTextAdd myTextArea " + textHeight + "'" + textColor + " onclick='ShowPaperClick(" + obj.Paper[i].id + ")'>" + obj.Paper[i].title + "</textarea>" +
 										  	"<h1 class='myMsgText'>" + PaperMsg + "</h1>" + 
 										  "</div>"　+
 										  	"<input type='button' class='mybutton' value='Modify' onclick='ModifyPaperClick(" + obj.Paper[i].id + ")'>" +
@@ -191,6 +198,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							}
   						});
   					}
+            $("#my_contact").show(1000);
   				}	
 
   			});
@@ -211,7 +219,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 alert(data);
             }
         });*/
-
   	}
 
   	function MyLogOutClick(){
@@ -220,12 +227,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
   	$(document).ready(function(){
   		//Do MyPaper
-  	//	$("#my_contact").hide();
-  /*	document.cookie="userId=828";
-alert(document.cookie);*/
+  		$("#my_contact").hide();
 
-		username = "qqq";
-		MyPaperClick();
+      //localStorage.setItem("name", "qqq");
+		  username = localStorage.getItem("name");
+		  MyPaperClick();
 
   	});
 
