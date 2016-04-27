@@ -44,9 +44,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <div class="container">
             <div class="pag-nav">
                 <ul class="p-list">
-                    <li><a href="#" onclick="unReviewPage()">待审阅</a></li> &nbsp;&nbsp;/&nbsp;
-                    <li><a href="#" onclick="reviewedPageNew()">已审阅（有更新）</a></li>/&nbsp;
-                    <li><a href="#" onclick="reviewedPage()">已审阅</a></li>
+
                 </ul>
             </div>
         </div>
@@ -57,7 +55,30 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <div class="contact" id="finalJudgement">
 
 </div>
+<div class="contact" id="modalpos">
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                </div>
+                <div class="modal-body">
+                    <table align="center">
+                        <tr><h2>是否通过审批？</h2></tr>
+                        <br>
+                        <tr id="FinalJudgeBtn">
 
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer" id="modal-footer">
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->';
+</div>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -66,7 +87,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
     function showPaperInfo(data, flag, tagID) {
         var content = '';
-
         var paperMsg = "作者: " + data.author + "  提交时间: " + data.submittime + "  关键词: ";
 
         $.ajax({
@@ -81,48 +101,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         paperMsg += keywords.Keywords[i].word;
                     }
                 }
-                content += '\
-                        <div class="modal fade" id="Modal'+data.id+'" tabindex="-1" role="dialog"\
-                             aria-labelledby="myModalLabel" aria-hidden="true">\
-                            <div class="modal-dialog">\
-                                <div class="modal-content">\
-                                    <div class="modal-header">\
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>\
-                                        <h4 class="modal-title" id="myModalLabel">请选择评审意见</h4>\
-                                    </div>\
-                                    <div class="modal-body">\
-                                        <table align="center">\
-                                            <tr>\
-                                                <td><label for="name">审稿意见</label></td>\
-                                                <td><select id="advice'+data.id+'" class="form-control"> \
-                                                    <option value="Strong Accept">Strong Accept</option>\
-                                                    <option value="Accept">Accept</option>\
-                                                    <option value="Weak Accept">Weak Accept</option>\
-                                                    <option value="Borderline Paper">Borderline Paper</option>\
-                                                    <option value="Weak Reject">Weak Reject</option>\
-                                                    <option value="Reject">Reject</option>\
-                                                    <option value="Strong Reject">Strong Reject</option>\
-                                                </select></td>\
-                                            </tr>\
-                                            <tr>\
-                                                <td><label for="name">信任度</label></td>\
-                                                <td><select id="confidence'+data.id+'" class="form-control"> \
-                                                    <option value="Expert">Expert</option>\
-                                                    <option value="High">High</option>\
-                                                    <option value="Medium">Medium</option>\
-                                                    <option value="Low">Low</option>\
-                                                    <option value="Null">Null</option>\
-                                                </select></td>\
-                                            </tr>\
-                                        </table>\
-                                    </div>\
-                                    <div class="modal-footer">\
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>\
-                                        <button type="button" class="btn btn-primary" onclick="addAdvice('+data.id+')">提交</button>\
-                                    </div>\
-                                </div><!-- /.modal-content -->\
-                            </div><!-- /.modal-dialog -->\
-                        </div><!-- /.modal -->';
 
                 if (flag % 2 == 0) {
                     content += '<div class="container" style="background: #d9d9d9;">\
@@ -141,7 +119,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                     </div>';
                 }
                 content += '<div>\
-                        <input type="button" class="mybutton" value="添加意见" onclick="addAdviceClick(' + data.id + ')">\
+                        <input type="button" class="mybutton" value="审批" onclick="judgeClick(' + data.id + ')">\
                         <input type="button" class="mybutton" value="查看意见" onclick="checkAdviceClick(' + data.id + ')">\
                     </div>\
                 </div>';
@@ -161,7 +139,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var content = '<div class="container">\
                             <div class="contact-main">\
                                 <h1 class="myheadText" style="font-size:30px">论文名</h1>\
-                                <h1 class="myheadLabel">添加意见</h1>\
+                                <h1 class="myheadLabel">审批</h1>\
                                 <h1 class="myheadLabel">查看意见</h1>\
                             </div>\
                         </div>';
@@ -177,8 +155,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 var obj = eval(data);
                 var papers = obj.Paper;
                 var color = 0;
-                showPaperInfo(papers[i], color,"#finalJudgement");
-                color++;
+                for (var i = 0; i < papers.length; i++) {
+                    showPaperInfo(papers[i], color, "#finalJudgement");
+                    color++;
+                }
             }
         });
     }
@@ -192,47 +172,41 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         window.open(url,"","top=150,left=300,width=600,height=400");
     }
 
-    function addAdviceClick(paperID) {
-        $("#Modal"+paperID).modal();
+    function judgeClick(paperID) {
+        var content = '<button type="button" class="btn btn-success btn-lg" onclick="finalJudge('+paperID+',1)">通过</button>\
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+                        <button type="button" class="btn btn-danger btn-lg" onclick="finalJudge('+paperID+',0)">拒绝</button>';
+        $("#FinalJudgeBtn").html(content);
+        $("#myModal").modal();
     }
 
-    function addAdvice(paperID) {
-        var advice = $("#advice"+paperID).val();
-        var confidence = $("#confidence"+paperID).val();
-
-        var username = localStorage.getItem("name");
-
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.name="+username;
-        var userid;
+    function finalJudge(paperID,tag) {
+        console.log("final");
+        console.log(tag);
+        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.id="+paperID;
         $.ajax({
             url: myurl,
             type: "GET",
-            success: function (data) {
-                var obj = eval(data);
-                userid = obj.User[0].id;
-
-                var comment = {
-                    "reviewer":username,
-                    "advice":advice,
-                    "confidence":confidence,
-                    "commentwhat":{"id":paperID, "type":"Paper"},
-                    "whocomment":{"id":userid, "type":"User"}
+            success: function (oldpaperdata) {
+                var oldPaper = eval(oldpaperdata).Paper[0];
+                if (tag == 1) {
+                    oldPaper.status = "Passed";
                 }
-
-                console.log(comment);
-
+                else {
+                    oldPaper.status = "Failed";
+                }
+                console.log(oldPaper);
                 $.ajax({
-                    url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/",
+                    url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/"+paperID,
                     contentType: "application/json",
-                    type: "POST",
-                    data: JSON.stringify(comment),
-                    success: function (data) {
-                        var obj = eval(data);
-                        window.location.href="contributor.html";
+                    type: "PUT",
+                    data: JSON.stringify(oldPaper),
+                    success: function (newpaper) {
+                        console.log(eval(newpaper));
                     }
                 });
 
-                $("#Modal"+paperID).modal("hide");
+                $("#myModal").modal("hide");
 
             }
         });

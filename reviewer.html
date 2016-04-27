@@ -191,6 +191,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
                 var color = 0;
                 for (var i = 0; i < papers.length; i++) {
+                    if (papers[i].status != "FirstTrial") {
+                        console.log(papers[i].status);
+                        continue;
+                    }
                     myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
                     myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
                     $.ajax({
