@@ -4,8 +4,6 @@
 <title>queryPaper</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
-Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <link href="css/querybootstrap.css" rel='stylesheet' type='text/css' />
 <!-- Custom Theme files -->
@@ -13,6 +11,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href="css/myCss.css" rel='stylesheet' type='text/css' />
 <script src="js/jquery-2.2.3.min.js"> </script>
 <script src="js/bootstrap.min.js"> </script>
+<script src="js/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
 
 </head>
 <body>
@@ -43,9 +43,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<ul class="p-list">
           <li>搜索方式:</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <li><a value="c_keyword" id="a_1" onclick="chooseClick(this);">关键词</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <li><a value="c_author" id="a_2" onclick="chooseClick(this);">作者</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <li><a value="c_year" id="a_3" onclick="chooseClick(this);">发表年份</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <li><a value="c_title" id="a_4" onclick="chooseClick(this);">标题</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li><a value="c_tag" id="a_2" onclick="chooseClick(this);">标签</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li><a value="c_author" id="a_3" onclick="chooseClick(this);">作者</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li><a value="c_year" id="a_4" onclick="chooseClick(this);">发表年份</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li><a value="c_title" id="a_5" onclick="chooseClick(this);">标题</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				</ul>
 			</div>
 
@@ -92,6 +93,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
     function contentClear(){
       layout = "";
+      $("#my_contact").hide();
       $("#my_contact").html(layout);
     }
 
@@ -163,7 +165,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
       layout = "";
       cnt = 0;
       if (searchType == "c")
-        alert("请选择查询方式");
+        sweetAlert("请选择查询方式");
       else{
         //console.log("fuck");
         contentClear();
@@ -199,7 +201,50 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     //addPaper(keywords_array[i]);
                     //console.log(keywords_array[i]);
                     $.ajax({
-                      url : myurl + "Paper/?Paper.id=" + keywords_array[i],
+                      url : myurl + "Paper/?Paper.id=" + keywords_array[i] + "&Paper.status=Passed",
+                      async : false,
+                      type : "GET",
+                      success : function(_msg){
+                        var _obj = eval(_msg);
+                        if (jQuery.isEmptyObject(_obj)){
+                          return false;
+                        }
+                        addPaper(_obj.Paper[0]);
+                      }
+                    });
+                  }
+                }
+              }
+            });
+            break;
+          case "标签" :
+            $.ajax({
+              url : myurl + "Tags/?Tags.word=" + $("#search").val(),
+              type : "GET",
+              success : function(msg){
+                var obj = eval(msg);
+                if (jQuery.isEmptyObject(obj)){
+                  return false;
+                }
+                var tags_array = new Array();
+                var len = obj.Tags.length;
+                for (var i = 0; i < len; ++i){
+                  tags_array[i] = obj.Tags[i].tagtopaper.id;                 
+                }
+                for (var i = 0; i < len - 1; ++i){
+                  for (var j = i + 1; j < len; ++j){
+                    if (tags_array[i] < tags_array[j]){
+                      var tmp = tags_array[i];
+                      tags_array[i] = tags_array[j];
+                      tags_array[j] = tmp;
+                    }
+                  }
+                }
+                tags_array[len++] = -1;
+                for (var i = 0; i < len - 1; ++i){
+                  if (tags_array[i] != tags_array[i + 1]){
+                    $.ajax({
+                      url : myurl + "Paper/?Paper.id=" + tags_array[i], //"&Paper.status=Passed" 
                       async : false,
                       type : "GET",
                       success : function(_msg){
@@ -218,7 +263,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
           case "作者" :
             //console.log($("#search").val());
             $.ajax({
-              url : myurl + "Paper/?Paper.author=" + $("#search").val(),
+              url : myurl + "Paper/?Paper.author=" + $("#search").val() + "&Paper.status=Passed",
               type : "GET",
               success : function(msg){
                 var obj = eval(msg);
@@ -234,7 +279,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             break;
           case "发表年份" :
             $.ajax({
-              url : myurl + "Paper/?Paper.submittime=" + $("#search").val(),
+              url : myurl + "Paper/?Paper.submittime=" + $("#search").val() + "&Paper.status=Passed",
               type : "GET",
               success : function(msg){
                 var obj = eval(msg);
@@ -249,7 +294,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             break;
           case "标题" :
             $.ajax({
-              url : myurl + "Paper/?Paper.title=(like)" + $("#search").val(),
+              url : myurl + "Paper/?Paper.title=(like)" + $("#search").val() + "&Paper.status=Passed",
               type : "GET",
               success : function(msg){
                 var obj = eval(msg);
@@ -265,10 +310,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
           default: 
             break;
         }
+        $("#my_contact").show("slow");
       }
     }
 
     $(document).ready(function(){
+      username = localStorage.getItem("name");
     });
 
 </script>

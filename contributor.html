@@ -4,15 +4,17 @@
 <title>contributor</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
-Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+
 <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
 <!-- Custom Theme files -->
 <link href="css/style.css" rel='stylesheet' type='text/css' />	
 <link href="css/myCss.css" rel='stylesheet' type='text/css' />
+<link href="css/sweet-alert.css" rel='stylesheet' type='text/css' />
+<script src="js/sweet-alert.min.js"></script>
 <script src="js/jquery-2.2.3.min.js"> </script>
 <script src="js/bootstrap.min.js"> </script>
+
 
 </head>
 <body>
@@ -83,8 +85,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   	}
 
     function downloadPaperClick(obj){
-      alert(obj);
-      window.open("http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj, "", "");
+      //alert(obj);
+ //     window.open("http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj, "", "");/////////////////////////////////////////////
      // respons.setHeader("Access-Control-Allow-Origin", "*");
     /*  $.ajax({
         url : "http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj,
@@ -97,6 +99,90 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
           ///fuckkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
         }
       });*/
+      var rdfXML = "";
+      $.ajax({
+        url : myurl + "Paper/?Paper.id=" + obj,
+        type : "GET",
+        success : function(msg){
+          my_obj = eval(msg);
+          if (jQuery.isEmptyObject(my_obj)){
+            return false;
+          }
+          $.ajax({
+            url: myurl + "Keywords/?Keywords.match.id=" + my_obj.Paper[0].id,
+            type : "GET",
+            success : function(_msg){
+              var _obj = eval(_msg);    
+              if (jQuery.isEmptyObject(_obj)){
+                return false;
+              }
+              var keywords_array = new Array();
+              var len = _obj.Keywords.length;
+                for (var i = 0; i < len; ++i){
+                  keywords_array[i] = _obj.Keywords[i].match.id;                 
+              }
+              rdfXML = "" +
+                "<?xml version='1.0'?>" +
+                "<rdf:RDF" +
+                  "xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" + 
+                  "xmlns:cd='" + myurl + "Paper/" + "'" +
+                  "xmlns:kw='" + myurl + "Keywords/" + "'" + 
+                  "xmlns:tg='" + myurl + "Tags/" + "'>";
+              rdfXML += "" + 
+                "<rdf:Description rdf:about='" + myurl + "Paper/" + my_obj.Paper[0].id + "'>" +
+                  "<cd:type>paper</cd:type>" +
+                  "<cd:id>" + my_obj.Paper[0].id + "</cd:id>" +
+                  "<cd:title>" + my_obj.Paper[0].title + "</cd:title>" +
+                  "<cd:author>" + my_obj.Paper[0].author + "</cd:author>" +
+                  "<cd:unit>" + my_obj.Paper[0].unit + "</cd:unit>" +
+                  "<cd:address>" + my_obj.Paper[0].address + "</cd:address>" +
+                  "<cd:summary>" + my_obj.Paper[0].summary + "</cd:summary>" +
+                  "<cd:submittime>" + my_obj.Paper[0].submittime + "</cd:submittime>" +
+                  "<cd:status>" + my_obj.Paper[0].status + "</cd:status>" +
+                  "<cd:edittime>" + my_obj.Paper[0].edittime + "</cd:edittime>" +
+                  "<kw:>" +
+                    ///////////////////////////////////////////////////////////////////////////////
+                  "</kw:>" +
+
+                "</rdf:Description>";
+              rdfXML += "</rdf:RDF>";
+            }
+          });
+        }
+      });
+      
+    }
+
+    function cancelPaperClick(obj){
+    //  alert("cancel");
+      $.ajax({
+        url : myurl + "Paper/?Paper.id=" + obj,
+        type : "GET",
+        success : function(_msg){
+          var _obj = eval(_msg);
+          var _status = _obj.Paper[0].status;
+          //alert(obj.Paper[0].status);
+          if (_status == "Canceled")
+            sweetAlert("论文已经撤销");
+          else if (_status != "Passed")
+            sweetAlert("无法撤销没有通过的论文");
+          else
+          {
+            _obj.Paper[0].status = "Canceled";
+            //console.log(_obj.Paper[0].status);
+           // console.log(obj);
+            $.ajax({
+              url : myurl + "Paper/" + obj,
+              contentType : "application/json",
+              type : "PUT",
+              data : JSON.stringify(_obj.Paper[0]),
+              success : function(msg){
+                sweetAlert("撤销成功");
+              }
+            });
+          }
+        }
+      });
     }
 
   	function AdvicePaperClick(obj){
@@ -152,10 +238,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   							success: function(_msg){
   								//console.log(_msg);
 
-  								//console.log(obj.Paper[i].id);
+  								//console.log(obj.Paper[i].title + "   " + obj.Paper[i].id);
   								var _obj = eval(_msg);
   								if (jQuery.isEmptyObject(_obj)){
                     //console.log(123123);
+                    //alert("fuck");
   									return false;
   								}
 
@@ -176,6 +263,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   								cnt++;
   								layout = "";
                   var textColor = "";
+                  var paper_status = "";
+                  switch (obj.Paper[i].status){
+                    case "Delivered": paper_status = "已提交";
+                      break;
+                    case "Firsttrial": paper_status = "初审中";
+                      break;
+                    case "Finaljudgment": paper_status = "终审中";
+                      break;
+                    case "Passed": paper_status = "已通过";
+                      break;
+                    case "Failed": paper_status = "未通过";
+                      break;
+                    case "Canceled": paper_status = "已撤回";
+                      break;
+                    default: break;
+                  }
+                  console.log(paper_status);
                   var textHeight = "mytextHeight_" + ((Math.floor((obj.Paper[i].title.length - 1) / 50)) + 1);
   								if (cnt % 2 == 1) 
                     textColor = "style='background: #d9d9d9;'";
@@ -189,8 +293,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 										  "</div>"　+
 										  	"<input type='button' class='mybutton' value='Modify' onclick='ModifyPaperClick(" + obj.Paper[i].id + ")'>" +
 										  	"<input type='button' class='mybutton' value='Advice' onclick='AdvicePaperClick(" + obj.Paper[i].id + ")'>" +
-										  	"<input class='myStatusText' value='" + obj.Paper[i].status + "'" + textColor + " disabled='disabled'>" +
-                        "<input type='button' class='myImgButton' onclick='downloadPaperClick(" + obj.Paper[i].id + ")'>" +
+										  	"<input class='myStatusText' value='" + paper_status + "'" + textColor + " disabled='disabled'>" +
+                        "<input type='button' class='myImgButton_revoke' onclick='cancelPaperClick(" + obj.Paper[i].id + ")'>" +
+                        "<input type='button' class='myImgButton_download' onclick='downloadPaperClick(" + obj.Paper[i].id + ")'>" +
 									 "</div>" +
 								  "</div>");
 
@@ -198,7 +303,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							}
   						});
   					}
-            $("#my_contact").show(1000);
+            $("#my_contact").show("slow");
   				}	
 
   			});
@@ -229,7 +334,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   		//Do MyPaper
   		$("#my_contact").hide();
 
-      //localStorage.setItem("name", "qqq");
+      localStorage.setItem("name", "qqq");
 		  username = localStorage.getItem("name");
 		  MyPaperClick();
 
