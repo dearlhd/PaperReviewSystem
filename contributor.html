@@ -86,7 +86,7 @@
 
     function downloadPaperClick(obj){
       //alert(obj);
- //     window.open("http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj, "", "");/////////////////////////////////////////////
+      window.open("http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj, "", "");/////////////////////////////////////////////
      // respons.setHeader("Access-Control-Allow-Origin", "*");
     /*  $.ajax({
         url : "http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj,
@@ -99,7 +99,7 @@
           ///fuckkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
         }
       });*/
-      var rdfXML = "";
+   /*   var rdfXML = "";
       $.ajax({
         url : myurl + "Paper/?Paper.id=" + obj,
         type : "GET",
@@ -117,17 +117,37 @@
                 return false;
               }
               var keywords_array = new Array();
-              var len = _obj.Keywords.length;
-                for (var i = 0; i < len; ++i){
-                  keywords_array[i] = _obj.Keywords[i].match.id;                 
+              var kw_len = _obj.Keywords.length;
+                for (var i = 0; i < kw_len; ++i){
+                  keywords_array[i] = _obj.Keywords[i].word;                 
               }
+              var tags_array = new Array();
+              var tg_len = 0;
+
+              $.ajax({
+                url : myurl + "Tags/?Tags.tagtopaper.id=" + my_obj.Paper[0].id,
+                type : "GET",
+                async : false,
+                success : function(tg_msg){
+                  var tg_obj = eval(tg_msg);
+                  if (!jQuery.isEmptyObject(tg_obj)){
+                    tg_len = tg_obj.Tags.length;
+                    for (var i = 0; i < tg_len; ++i){
+                      tags_array[i] = tg_obj.Tags[i].word;
+                    }
+                  }
+                }
+              });
+
               rdfXML = "" +
                 "<?xml version='1.0'?>" +
                 "<rdf:RDF" +
                   "xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" + 
                   "xmlns:cd='" + myurl + "Paper/" + "'" +
                   "xmlns:kw='" + myurl + "Keywords/" + "'" + 
-                  "xmlns:tg='" + myurl + "Tags/" + "'>";
+                  "xmlns:tg='" + myurl + "Tags/" + "'" + 
+                  "xmlns:cont='http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/'>";
+
               rdfXML += "" + 
                 "<rdf:Description rdf:about='" + myurl + "Paper/" + my_obj.Paper[0].id + "'>" +
                   "<cd:type>paper</cd:type>" +
@@ -139,17 +159,39 @@
                   "<cd:summary>" + my_obj.Paper[0].summary + "</cd:summary>" +
                   "<cd:submittime>" + my_obj.Paper[0].submittime + "</cd:submittime>" +
                   "<cd:status>" + my_obj.Paper[0].status + "</cd:status>" +
-                  "<cd:edittime>" + my_obj.Paper[0].edittime + "</cd:edittime>" +
-                  "<kw:>" +
-                    ///////////////////////////////////////////////////////////////////////////////
-                  "</kw:>" +
+                  "<cd:edittime>" + my_obj.Paper[0].edittime + "</cd:edittime>";
+              
+              rdfXML += "<kw:word>" +
+                          "<rdf:Bag>";
+              for (var i = 0; i < kw_len; ++i){
+                rdfXML +=   "<rdf:li>" + keywords_array[i] + "</rdf:li>";
+              }
+              rdfXML +=   "</rdf:Bag>" +
+                        "</kw:word>";
 
-                "</rdf:Description>";
+              rdfXML += "<tg:word>" +
+                          "<rdf:Bag>";
+              for (var i = 0; i < tg_len; ++i){
+                rdfXML +=   "<rdf:li>" + tags_array[i] + "</rdf:li>"
+              }
+              rdfXML +=   "</rdf:Bag>" +
+                        "</tg:word>";
+
+              rdfXML += "<cont:content rdf:resource='http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + my_obj.Paper[0].id + "'/>";
+
+              rdfXML += "</rdf:Description>";
+
               rdfXML += "</rdf:RDF>";
+              //alert(rdfXML);                      
             }
           });
+
+          var paperInfo = {
+
+          }
+
         }
-      });
+      });*/
       
     }
 
@@ -334,7 +376,7 @@
   		//Do MyPaper
   		$("#my_contact").hide();
 
-      localStorage.setItem("name", "qqq");
+  //    localStorage.setItem("name", "qqq");
 		  username = localStorage.getItem("name");
 		  MyPaperClick();
 

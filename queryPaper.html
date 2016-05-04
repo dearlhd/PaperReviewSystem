@@ -279,7 +279,7 @@
             break;
           case "发表年份" :
             $.ajax({
-              url : myurl + "Paper/?Paper.submittime=" + $("#search").val() + "&Paper.status=Passed",
+              url : myurl + "Paper/?Paper.submittime=(like)" + $("#search").val() + "&Paper.status=Passed",
               type : "GET",
               success : function(msg){
                 var obj = eval(msg);
