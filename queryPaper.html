@@ -41,7 +41,7 @@
 		<div class="container">	
 		  <div class="pag-nav">
 				<ul class="p-list">
-          <li>搜索方式:</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li>查询方式:</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <li><a value="c_keyword" id="a_1" onclick="chooseClick(this);">关键词</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <li><a value="c_tag" id="a_2" onclick="chooseClick(this);">标签</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <li><a value="c_author" id="a_3" onclick="chooseClick(this);">作者</a></li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -151,7 +151,7 @@
     }
 
     function chooseClick(obj){
-        for (var i = 1; i <= 4; ++i)
+        for (var i = 1; i <= 5; ++i)
           $("#a_" + i).css("color", "black");
         $(obj).css("color", "white");
         searchType = $(obj).html();
@@ -165,7 +165,7 @@
       layout = "";
       cnt = 0;
       if (searchType == "c")
-        sweetAlert("请选择查询方式");
+        sweetAlert("请在上方查询方式中选择相应的查询方式");
       else{
         //console.log("fuck");
         contentClear();

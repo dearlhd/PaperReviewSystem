@@ -165,12 +165,13 @@
         sweetAlert("以上几项不能为空!");
         return false;
       }
-
-      if (sweetAlert("论文添加成功！") < 2)
+     // sweetAlert("论文添加成功！");
+      window.location.href = "contributor.html";
+   /*   if (sweetAlert("论文添加成功！") < 2)
       {
         window.location.href = "contributor.html";
       }
-
+*/
     }
 
     function DissertClick(){

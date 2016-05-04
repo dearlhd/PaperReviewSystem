@@ -86,7 +86,7 @@
 
     function downloadPaperClick(obj){
       //alert(obj);
-      window.open("http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj, "", "");/////////////////////////////////////////////
+      window.open("http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj, "", "");
      // respons.setHeader("Access-Control-Allow-Origin", "*");
     /*  $.ajax({
         url : "http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + obj,
@@ -95,13 +95,17 @@
         success : function(msg){
           //console.log(msg);
           alert("yes");
-          ///////////////////////////////////////////////////////////////////////////////////////////
           ///fuckkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
         }
       });*/
-   /*   var rdfXML = "";
+
+
+
+      ///////////////////////////////////////////////////////////////////////////////////////////
+  /*    var rdfXML = "";
       $.ajax({
         url : myurl + "Paper/?Paper.id=" + obj,
+        async : false,
         type : "GET",
         success : function(msg){
           my_obj = eval(msg);
@@ -110,6 +114,7 @@
           }
           $.ajax({
             url: myurl + "Keywords/?Keywords.match.id=" + my_obj.Paper[0].id,
+            async : false,
             type : "GET",
             success : function(_msg){
               var _obj = eval(_msg);    
@@ -182,17 +187,38 @@
               rdfXML += "</rdf:Description>";
 
               rdfXML += "</rdf:RDF>";
-              //alert(rdfXML);                      
+             //alert(rdfXML);                      
             }
           });
+          //alert(rdfXML);
 
           var paperInfo = {
+            "title" : my_obj.Paper[0].title,
+            "author" : my_obj.Paper[0].author,
+            "unit" : my_obj.Paper[0].unit,
+            "address" : my_obj.Paper[0].address,
+            "summary" : my_obj.Paper[0].summary,
+            "content" : rdfXML,
+            "submittime" : my_obj.Paper[0].submittime,
+            "status" : my_obj.Paper[0].status,
+            "edittime" : my_obj.Paper[0].edittime
+          };
 
-          }
-
+          $.ajax({
+            url: myurl + "Paper/" + my_obj.Paper[0].id,
+            contentType: "application/json",
+            type: "PUT",
+            async : false,
+            data: JSON.stringify(paperInfo),
+            success: function(msg){
+            }
+          });
         }
-      });*/
-      
+      });
+      */
+      ///////////////////////////////////////////////////////////////////////////////////////////
+
+
     }
 
     function cancelPaperClick(obj){
@@ -376,7 +402,7 @@
   		//Do MyPaper
   		$("#my_contact").hide();
 
-  //    localStorage.setItem("name", "qqq");
+      //localStorage.setItem("name", "qqq");
 		  username = localStorage.getItem("name");
 		  MyPaperClick();
 
