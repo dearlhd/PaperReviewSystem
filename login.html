@@ -119,8 +119,9 @@
                         data: JSON.stringify(userInfo),
                         success: function (data) {
                             var obj = eval(data);
+                            console.log(obj);
                             localStorage.setItem("name", uname);
-                            localStorage.setItem("role", obj.User[0].role);
+                            localStorage.setItem("role", obj.role);
                             window.location.href="contributor.html";
                         }
                     });
