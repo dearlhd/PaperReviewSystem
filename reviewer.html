@@ -149,7 +149,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                     </div>';
                 }
                 content += '<div>\
-                        <input type="button" class="mybutton" value="添加意见" onclick="addAdviceClick(' + data.id + ')">\
+                        <input type="button" class="mybutton" value="添加/修改意见" onclick="addAdviceClick(' + data.id + ')">\
                         <input type="button" class="mybutton" value="查看意见" onclick="checkAdviceClick(' + data.id + ')">\
                     </div>\
                 </div>';
@@ -226,7 +226,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var content = '<div class="container">\
                             <div class="contact-main">\
                                 <h1 class="myheadText" style="font-size:30px">论文名</h1>\
-                                <h1 class="myheadLabel">添加意见</h1>\
+                                <h1 class="myheadLabel">修改意见</h1>\
                                 <h1 class="myheadLabel">查看意见</h1>\
                             </div>\
                         </div>';
@@ -263,7 +263,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                     }
                                     else if (cTimes[j]+pTimes[j] > pTimes[j]+cTimes[j]){
                                         f = 1;
-                                        breakl
+                                        break;
                                     }
                                 }
 
@@ -293,7 +293,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var content = '<div class="container">\
                             <div class="contact-main">\
                                 <h1 class="myheadText" style="font-size:30px">论文名</h1>\
-                                <h1 class="myheadLabel">添加意见</h1>\
+                                <h1 class="myheadLabel">修改意见</h1>\
                                 <h1 class="myheadLabel">查看意见</h1>\
                             </div>\
                         </div>';
@@ -367,15 +367,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
         myurl = myurl + "&Comment.commentwhat.id="+paperID;
+        console.log(myurl);
         $.ajax({
             url: myurl,
             async:false,
             type: "GET",
-            success: function (data2) {
-                var obj2 = eval(data2);
+            success: function (cData) {
                 if (!jQuery.isEmptyObject(cData)) {
+                    console.log("Change advice");
                     var oldcomment = eval(cData);
+                    oldcomment = oldcomment.Comment;
+                    while (oldcomment.length > 1) {
+                        oldcomment = oldcomment[0];
+                    }
+                    console.log(oldcomment);
                     oldcomment.commentwhat = {"id":paperID, "type":"Paper"};
+                    console.log(oldcomment);
                     var uid = oldcomment.whocomment.id;
                     oldcomment.whocomment = {"id": uid, "type":"User"};
                     oldcomment.advice = advice;
@@ -384,7 +391,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     oldcomment.edittime = nowDate.getFullYear() + "-" + nowDate.getMonth() + "-" + nowDate.getDate();
 
                     $.ajax({
-                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/"+paperID,
+                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/"+oldcomment.id,
                         contentType: "application/json",
                         type: "PUT",
                         data: JSON.stringify(oldcomment),
@@ -464,6 +471,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         $("#Modal"+paperID).modal("hide");
     }
+
 
 </script>
 </body>
