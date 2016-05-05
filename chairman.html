@@ -81,6 +81,18 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 <select name="to" id="multiselect_to" class="form-control" size="8" multiple="multiple"></select>
                             </div>
                         </div>
+                        <br>
+                        <div class="row" align="center">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="searchUserInput" placeholder="输入审稿人姓名">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-default" onclick="searchReviewer()">查找审稿人</button>
+
+                            </form>
+                        </div>
                     </div>
                     <div class="modal-footer" id="modal-footer">
 
@@ -159,6 +171,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     }
 
     function distributeClick(paperID) {
+        $("#multiselect").html("");
+        $("#multiselect_to").html("");
+
         var selectInfo = '';
         var keywords;
 
@@ -169,6 +184,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             success: function (usersret) {
                 var obj = eval(usersret);
                 fuzzyUsers = obj.User;
+                users = new Array();
                 console.log("in fuzzyUsers");
                 console.log(fuzzyUsers);
                 // 获得文章的keyword
@@ -276,6 +292,36 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         $("#paper"+paperID).hide();
     }
 
+    function searchReviewer() {
+        var sname = $("#searchUserInput").val();
+        $.ajax({
+            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.name=(like)"+sname,
+            type:"GET",
+            success:function (userList) {
+                userList = eval(userList);
+                if (!jQuery.isEmptyObject(userList)) {
+                    userList = userList.User;
+                    var listContent = "";
+                    console.log(userList);
+                    console.log(users);
+                    for (var i = 0; i < userList.length; i++) {
+                        var f = 1;
+                        for (var j = 0; j < users.length; j++) {
+                            if (userList[i].name == users[j].name) {
+                                f = 0;
+                                break;
+                            }
+                        }
+                        if (f == 1) {
+                            listContent += '<option value=\"'+userList[i].id+'\">'+userList[i].name+'</option>';
+                        }
+                    }
+                    $("#multiselect").append(listContent);
+                }
+            }
+        })
+    }
+    
 </script>
 
 </body>
