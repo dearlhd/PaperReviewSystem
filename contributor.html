@@ -68,8 +68,7 @@
           <div class='ser-top'>
             <div class='col-md-12 serve-column' style='cursor: default;'>
               <div>
-                <textarea class='myTextArea_Title' readonly='readonly'>22222222121</textarea>
-                <input type='button' class='myImgButton_addCart'>
+                <textarea class='myTextArea_Title' readonly='readonly'>您的使用是对我们最大的支持</textarea>
               </div>
               <textarea class='myTextArea_Content' style='display:none;' readonly='readonly'></textarea>
             </div>
@@ -82,7 +81,7 @@
 
           <div class='ser-top'>
             <div class='col-md-12 serve-column' style='cursor: default;'>
-              <p onclick='queryClick(\"by_isbnNumber\");' style='cursor: pointer;'>按ISBN查询</p>
+              <p style='cursor: pointer;'>欢迎来到国际论文审阅系统</p>
             </div>
           </div>
           <div class='clearfix'>
@@ -243,14 +242,14 @@
               });
             }
             $("#my_Content").show("slow");
-            $("#my_Choice").html(demo_Choicehead + "欢迎来到论文审阅系统" + demo_tail);
+            $("#my_Choice").html(demo_Choicehead + "欢迎来到国际论文审阅系统" + demo_tail);
             $("#my_Choice").show("slow");
           }
         });
   }
 
   $(document).ready(function(){
-    $("#my_contact").hide();
+    $("#my_contact").hide();    
 
     demo_Contenthead = "" + 
       "<div class='ser-top'>" +
@@ -268,7 +267,9 @@
       "</div>";
 
     username = localStorage.getItem("name");
-    username = "qqq";
+   // username = "qqq";
+
+    $("#bookstore_welcome").text(username + "  Welcome to Paper System");
     MyPaperClick();
 
   });
