@@ -1,0 +1,281 @@
+input,textarea{outline:none;}
+
+.myBody
+{
+	background: url(../images/background.jpg) no-repeat;
+	height: 100%; 
+	margin: auto;
+	background-size: 100% 100%;
+}
+
+.myLoginForm
+{
+	position: absolute;    
+}
+
+.my_loginbutton
+{
+	float: left;
+	width: 48%;
+	background-color: rgba(255, 255, 255, 0.25);
+	border: none;
+	opacity: 0.8;
+}
+
+.my_logininput
+{
+	background-color: rgba(255, 255, 255, 0.25);
+	border: none;
+}
+
+.my_loginp
+{
+	text-align: center;
+	font-size: 30px;
+	font-family: FangSong;
+	margin-bottom: 1px;
+}
+
+.my_loginform
+{
+	min-width: 242px;
+}
+
+.my_loginmodal
+{
+	background-color: rgba(255, 255, 255, 0.6);
+	width: 75%;
+	margin: auto auto;
+}
+
+.my_registerh
+{
+	font-size: 25px;
+	font-weight: bold;
+	font-family: FangSong;
+}
+
+.my_registerbutton
+{
+	float: right;
+	width: 48%;
+	background-color: rgba(255, 255, 255, 0.25);
+	border: none;
+	opacity: 0.8;
+}
+
+.my_registermodelbutton
+{
+	color: black;
+	border: none; 
+	background-color: rgba(243, 168, 75, 0.1);
+}
+
+.my_registerinput
+{
+	background-color: rgba(255, 255, 255, 0.6);
+	border: none;	
+}
+
+.my_registerlabel
+{
+	font-size: 20px;
+	font-weight: bold;
+	font-family: FangSong;
+}
+
+.my_registerselect
+{
+	margin-top: 2px;
+}
+
+.my_menu
+{
+	float: right;
+	margin-bottom: 10px;
+}
+
+.my_menuEntity
+{
+	font-size: 20px;
+}
+
+.my_services
+{
+	background: #ffffff;
+}
+
+.my_menubutton
+{
+	cursor: pointer;
+}
+
+.myTextArea_Title
+{
+	background-attachment: fixed;   
+	background-repeat: no-repeat; 
+	height: 65px;
+	padding: 0;
+	resize : none;
+	overflow: hidden;
+	width: 90%;
+	font-size: 25px;
+	font-weight: bold;
+	font-family: FangSong;	
+	cursor: pointer;
+	border-width: 0;
+	border-style: none;
+	background-color: rgba(255, 255, 255, 0);
+}
+
+.myTextArea_Content
+{
+	background-attachment: fixed;   
+	background-repeat: no-repeat; 
+	height: 65px;
+	padding: 0;
+	resize : none;
+	overflow: hidden;
+	width: 100%;
+	font-size: 20px;
+	font-family: FangSong;	
+	cursor: default;
+	border-width: 0;
+	border-style: none;
+	background-color: rgba(255, 255, 255, 0);
+}
+
+.myTextArea_ChatRoomReceive
+{
+	background-attachment: fixed;   
+	background-repeat: no-repeat; 
+	height: 600px;
+	padding: 0;
+	resize : none;
+	width: 100%;
+	font-size: 25px;
+	font-family: FangSong;	
+	cursor: default;
+	background-color: rgba(233, 233, 233, 0.5);
+}
+
+.myTextArea_ChatRoomSend
+{
+	background-attachment: fixed;   
+	background-repeat: no-repeat;
+	float: left;
+	height: 60px;
+	overflow: hidden;
+	resize : none;
+	width: 80%;
+	font-size: 20px;
+	font-family: FangSong;
+	background-color: rgba(233, 233, 233, 0.5);
+}
+
+.my_ser
+{
+	cursor: default;
+}
+
+.myImgButton_addCart
+{
+	border: none;
+    outline: none;
+    width: 25px;
+    height: 25px;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+	float: right;
+	margin-left: 1em;
+	background: url(../images/cart.jpg) no-repeat;
+	background-size: 100%;
+}
+
+.myImgButton_revoke
+{
+	border: none;
+    outline: none;
+    width: 25px;
+    height: 25px;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+	float: right;
+	margin-left: 1em;
+	background: url(../images/revoke_2.jpg) no-repeat;
+	background-size: 100%;
+}
+
+.myImgButton_download
+{
+	border: none;
+    outline: none;
+    width: 25px;
+    height: 25px;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+	float: right;
+	margin-left: 1em;
+	background: url(../images/download_1.jpg) no-repeat;
+	background-size: 118%;
+}
+
+.myImgButton_comment
+{
+	border: none;
+    outline: none;
+    width: 25px;
+    height: 25px;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+	float: right;
+	margin-left: 1em;
+	background: url(../images/comment.jpg) no-repeat;
+	background-size: 100%;
+}
+
+.myImgButton_modify
+{
+	border: none;
+    outline: none;
+    width: 25px;
+    height: 25px;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+	float: right;
+	margin-left: 1em;
+	background: url(../images/modify.jpg) no-repeat;
+	background-size: 100%;
+}
+
+.myButton_ChatRoomSend
+{
+	width: 15%;
+	height: 60px;
+	float: right;
+}
+
+.mytextHeight_1
+{
+	height : 33px;
+}
+
+.mytextHeight_2
+{
+	height : 66px;
+}
+
+.mytextHeight_3
+{
+	height : 99px;
+}
+
+.mytextHeight_4
+{
+	height : 133px;
+}
