@@ -65,8 +65,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 </div>
                 <div class="modal-body">
                     <table align="center">
-                        <tr><h2>是否通过审批？</h2></tr>
+                        <tr><h2 id="modalTip">是否通过审批？</h2></tr>
                         <br>
+                        <tr id = "modalContent" >
+
+                        </tr>
+
                         <tr id="FinalJudgeBtn">
 
                         </tr>
@@ -170,6 +174,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             success: function (data) {
                 var obj = eval(data);
                 var papers = obj.Paper;
+
+                if (jQuery.isEmptyObject(papers)) {
+                    return false;
+                }
+
                 console.log(papers);
                 var color = 0;
                 for (var i = 0; i < papers.length; i++) {
@@ -251,14 +260,17 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     type: "PUT",
                     data: JSON.stringify(oldPaper),
                     success: function (newpaper) {
-                        console.log(eval(newpaper));
-                        console.log(oldPaper.id);
                         archivePaper(oldPaper.id);
+                        var tagContent = '<input type="text" class="form-control" id="tags" placeholder="请输入标签，以；隔开">';
+                        var footer = '<button type="button" class="btn btn-default" data-dismiss="modal">close</button>\
+                                      <button type="button" class="btn btn-primary" onclick="addTags('+oldPaper.id+')">submit</button>';
+
+                        $("#modalTip").html("请添加标签！");
+                        $("#FinalJudgeBtn").html("");
+                        $("#modalContent").html(tagContent);
+                        $("#modal-footer").html(footer);
                     }
                 });
-
-                $("#myModal").modal("hide");
-
             }
         });
 
@@ -382,6 +394,32 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
     }
 
+    function addTags (paperId) {
+        var tags = $("#tags").val();
+        tags = tags.split(';');
+        console.log(tags);
+        for (var i = 0; i < tags.length; i++) {
+            var tagInfo = {
+                "word":tags[i],
+                "tagtopaper": {
+                    "id":paperId,
+                    "type":"Paper"
+                }
+            }
+            $.ajax({
+                async:false,
+                url:"http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Tags",
+                type:"POST",
+                contentType: "application/json",
+                data: JSON.stringify(tagInfo),
+                success:function (msg) {
+                    console.log("tag added");
+                }
+            });
+        }
+        $("#myModal").modal("hide");
+        finalJudgementPage();
+    }
 </script>
 </body>
 </html>
