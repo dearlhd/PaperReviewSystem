@@ -173,6 +173,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 console.log(fuzzyUsers);
                 // 获得文章的keyword
                 for (var i = 0; i < fuzzyUsers.length; i++) {
+                    if (fuzzyUsers[i].feature == null) {
+                        console.log("no feature");
+                        continue;
+                    }
                     var keyUrl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Keywords/?Keywords.match.id="
                             +paperID + "&Keywords.word=(like)"+fuzzyUsers[i].feature;
                     console.log(keyUrl);
@@ -185,7 +189,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                             console.log("in keyword return");
                             console.log(keywords);
                             if(!jQuery.isEmptyObject(keywords)) {
-                                users.add(fuzzyUsers[i]);
+                                users[users.length] = fuzzyUsers[i];
                                 console.log(users)
                             }
                         }
