@@ -6,61 +6,121 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template,
 Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
-    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-    <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
     <!-- Custom Theme files -->
-    <link href="css/style.css" rel='stylesheet' type='text/css' />
-    <link href="css/myCss.css" rel='stylesheet' type='text/css' />
-    <script src="js/jquery-2.2.3.min.js"> </script>
-    <script src="js/bootstrap.min.js"> </script>
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <link href="css/main_bootstrap.css" rel='stylesheet' type='text/css' />
+    <link href="css/main_my.css" rel='stylesheet' type='text/css' />
+    <link href="css/main_style.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="js/jquery-2.2.3.min.js" type="text/javascript"></script>
 </head>
 <body>
 <!--start-home-->
 <div id="home" class="header">
-    <div class="header-bottom">
-        <div class="container">
+    <div class="container">
+        <div class="header-top">
             <div class="logo">
-                <a href=""><h1>Paper<span>_System</span></h1></a>
+                <a style="cursor:default;"><h1><span>国际论文</span>_审阅系统</h1></a>
             </div>
-            <span class="menu"></span>
-            <div class="top-menu">
-                <ul>
-                    <nav>
-                        <li><a href="queryPaper.html">查阅论文</a></li>
-                        <li><a href="reviewer.html">审稿</a></li>
-                        <li><a href="login.html">退出</a></li>
-                    </nav>
-                </ul>
+            <div class="search">
+                <div id="sb-search" class="sb-search">
+                    <input class="sb-search-input" placeholder="Enter your search term..." type="search" name="search" id="search">
+                    <input class="sb-search-submit sb-icon-search" value="" id="myqueryButton" onclick="searchButtonClick();">
+                </div>
             </div>
-
-            <!-- script for menu -->
+            <script src="js/main_classie.js"></script>
+            <script src="js/main_uisearch.js"></script>
+            <script>
+                new UISearch( document.getElementById( 'sb-search' ) );
+            </script>
             <div class="clearfix"></div>
         </div>
+        <span class="menu"></span>
+        <div class="top-menu my_menu" style="float: right;">
+            <ul class="cl-effect-16 my_menuEntity">
+                <li><a href="queryPaper.html" style="cursor:pointer;">查阅论文</a></li>
+                <li><a href="reviewer.html" style="cursor:pointer;">审稿</a></li>
+                <li><a href="login.html" style="cursor:pointer;">退出</a></li>
+            </ul>
+        </div>
+        <script>
+            $( "span.menu" ).click(function() {
+                $( ".top-menu" ).slideToggle( "slow", function() {
+                });
+            });
+        </script>
     </div>
-
-    <div class="banner two">
-        <div class="container">
-            <div class="pag-nav">
-                <ul class="p-list">
-                    <li><a href="#" onclick="unReviewPage()">待审阅</a></li> &nbsp;&nbsp;/&nbsp;
-                    <li><a href="#" onclick="reviewedPageNew()">已审阅（有更新）</a></li>/&nbsp;
-                    <li><a href="#" onclick="reviewedPage()">已审阅</a></li>
-                </ul>
-            </div>
+    <div class="container">
+        <div class="clearfix"> </div>
+        <div class="banner two">
+            <h2 class="tittle" id="bookstore_welcome">Welcome</h2>
         </div>
     </div>
 </div>
+
+<div class="about two">
+    <div class="container">
+        <a href="#" onclick="unReviewPage()">待审阅</a> &nbsp;/&nbsp;
+        <a href="#" onclick="reviewedPageNew()">已审阅（有更新）</a>/&nbsp;
+        <a href="#" onclick="reviewedPage()">已审阅</a>
+        <div class="about-top">
+            <div class="col-md-9 about-text" id="my_Content">
+                <div id="unReview">
+                    <div class="ser-top">
+                        <div class="col-md-12 serve-column" style="cursor: default;">
+                            <div>
+                                <textarea class="myTextArea_Title mytextHeight_1" readonly="readonly" onclick="ShowPaperClick(1461502077620)">
+                                    zxcsdfasdfasdf
+                                </textarea>
+                                <input type="button" class="myImgButton_revoke" onclick="cancelPaperClick(1461502077620)">
+                                <input type="button" class="myImgButton_download" onclick="downloadPaperClick(1461502077620)">
+                            </div>
+                            <div>
+                                <textarea class="myTextArea_Title" style="height:0px;" readonly="readonly"></textarea>
+                                <input type="button" class="myImgButton_modify" onclick="ModifyPaperClick(1461502077620)">
+                                <input type="button" class="myImgButton_comment" onclick="AdvicePaperClick(1461502077620)">
+                            </div>
+                            <textarea class="myTextArea_Content" readonly="readonly">
+                                论文状态:   作者: qqq  提交时间: 2016-3-24  关键词: ffff
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+                <div id="reviewedNew">
+
+                </div>
+                <div id="reviewed">
+
+                </div>
+                <div class='ser-top'>
+                    <div class='col-md-12 serve-column' style='cursor: default;'>
+                        <div>
+                            <textarea class='myTextArea_Title' readonly='readonly'>您的使用是对我们最大的支持</textarea>
+                        </div>
+                        <textarea class='myTextArea_Content' style='display:none;' readonly='readonly'></textarea>
+                    </div>
+                </div>
+                <div class='clearfix'>
+                </div>;
+
+            </div>
+            <div class="col-md-3 ab-text" id="my_Choice">
+
+                <div class='ser-top'>
+                    <div class='col-md-12 serve-column' style='cursor: default;'>
+                        <p style='cursor: pointer;'>欢迎来到国际论文审阅系统</p>
+                    </div>
+                </div>
+                <div class='clearfix'>
+                </div>
+
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+</div>
+
 <!--error-->
 
-<div class="contact" id="unReview">
-
-</div>
-<div class="contact" id="reviewedNew">
-
-</div>
-<div class="contact" id="reviewed">
-
-</div>
 
 <div class="contact" id="modalpos">
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -154,9 +214,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     </div>\
                 </div>';
 
-
-
-
                 $(tagID).append(content);
                 $(tagID).show('slow');
             }
@@ -182,7 +239,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 <h1 class="myheadLabel">查看意见</h1>\
                             </div>\
                         </div>';
-        $("#unReview").html(content);
+        //$("#unReview").html(content);
         $("#unReview").show('slow');
 
         $.ajax({
