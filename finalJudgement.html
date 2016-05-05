@@ -7,54 +7,82 @@
     <meta name="keywords" content="Gato Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template,
 Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
     <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-    <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
-    <!-- Custom Theme files -->
-    <link href="css/style.css" rel='stylesheet' type='text/css' />
-    <link href="css/myCss.css" rel='stylesheet' type='text/css' />
-    <script src="js/jquery-2.2.3.min.js"> </script>
+    <link href="css/main_bootstrap.css" rel='stylesheet' type='text/css' />
+    <link href="css/main_my.css" rel='stylesheet' type='text/css' />
+    <link href="css/main_style.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="js/jquery-2.2.3.min.js" type="text/javascript"></script>
     <script src="js/bootstrap.min.js"> </script>
+    <script src="js/multiselect.min.js"></script>
 </head>
 <body>
 <!--start-home-->
 <div id="home" class="header">
-    <div class="header-bottom">
-        <div class="container">
+    <div class="container">
+        <div class="header-top">
             <div class="logo">
-                <a href=""><h1>Paper<span>_System</span></h1></a>
+                <a style="cursor:default;"><h1><span>国际论文</span>_审阅系统</h1></a>
             </div>
-            <span class="menu"></span>
-            <div class="top-menu">
-                <ul>
-                    <nav>
-                        <li><a href="viewPaper.html">查阅论文</a></li>
-                        <li><a href="chairman.html">分配任务</a></li>
-                        <li><a href="finalJudgement.html">终审</a></li>
-                        <li><a href="privilegeManagement.html">权限管理</a></li>
-                        <li><a href="login.html">退出</a></li>
-                    </nav>
-                </ul>
-            </div>
+            <div class="search">
 
-            <!-- script for menu -->
+            </div>
+            <script src="js/main_classie.js"></script>
+            <script src="js/main_uisearch.js"></script>
+            <script>
+                new UISearch( document.getElementById( 'sb-search' ) );
+            </script>
             <div class="clearfix"></div>
         </div>
+        <span class="menu"></span>
+        <div class="top-menu my_menu" style="float: right;">
+            <ul class="cl-effect-16 my_menuEntity">
+                <li><a href="viewPaper.html">查阅论文</a></li>
+                <li><a href="chairman.html">分配任务</a></li>
+                <li><a href="finalJudgement.html">终审</a></li>
+                <li><a href="privilegeManagement.html">权限管理</a></li>
+                <li><a href="login.html">退出</a></li>
+            </ul>
+        </div>
+        <script>
+            $( "span.menu" ).click(function() {
+                $( ".top-menu" ).slideToggle( "slow", function() {
+                });
+            });
+        </script>
     </div>
-
-    <div class="banner two">
+    <div class="container">
+        <div class="clearfix"> </div>
+        <div class="banner two">
+            <h2 class="tittle" id="bookstore_welcome">Welcome</h2>
+        </div>
+    </div>
+    <div class="about two">
         <div class="container">
-            <div class="pag-nav">
-                <ul class="p-list">
+            <h3 class="tittle" id="myEntityTittle">终审</h3>
+            <div class="about-top">
+                <div class="col-md-9 about-text" id="my_Content">
+                    <div class="contact" id="finalJudgement">
 
-                </ul>
+                    </div>
+                </div>
+                <div class="col-md-3 ab-text" id="my_Choice">
+
+                    <div class='ser-top'>
+                        <div class='col-md-12 serve-column' style='cursor: default;'>
+                            <p style='cursor: pointer;'>欢迎来到国际论文审阅系统</p>
+                        </div>
+                    </div>
+                    <div class='clearfix'>
+                    </div>
+
+                </div>
+                <div class="clearfix"> </div>
             </div>
         </div>
     </div>
 </div>
 <!--error-->
 
-<div class="contact" id="finalJudgement">
 
-</div>
 <div class="contact" id="modalpos">
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
          aria-labelledby="myModalLabel" aria-hidden="true">
@@ -104,13 +132,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         return papers;
     }
 
-    function showPaperInfo(data, flag, tagID) {
-        console.log("credit: "+data.credit);
+    function showPaperInfo(paper, flag, tagID) {
+        console.log("credit: "+paper.credit);
         var content = '';
-        var paperMsg = "作者: " + data.author + "  提交时间: " + data.submittime + "  关键词: ";
+        var paperMsg = "作者: " + paper.author + "  提交时间: " + paper.submittime + "  关键词: ";
 
         $.ajax({
-            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Keywords/?Keywords.match.id="+data.id,
+            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Keywords/?Keywords.match.id="+paper.id,
             type: "GET",
             async: false,
             success: function (keywordsdata) {
@@ -122,27 +150,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     }
                 }
 
-                if (flag % 2 == 0) {
-                    content += '<div class="container" style="background: #d9d9d9;">\
-                                    <div class="mytext">\
-                                        <textarea class="myTitleText myTitleTextAdd myTextArea" style="background: #d9d9d9;" \
-                                            onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</textarea> \
-                                        <h1 class="myMsgText">'+paperMsg+'</h1>\
-                                    </div>';
-                }
-                else {
-                    content += '<div class="container" style="background: #f0f0f0;">\
-                                    <div class="mytext">\
-                                        <textarea class="myTitleText myTitleTextAdd myTextArea" style="background: #f0f0f0;" \
-                                            onclick="ShowPaperClick(' + data.id + ')">' + data.title + '</textarea> \
-                                        <h1 class="myMsgText">'+paperMsg+'</h1>\
-                                    </div>';
-                }
-                content += '<div>\
-                        <input type="button" class="mybutton" value="审批" onclick="judgeClick(' + data.id + ')">\
-                        <input type="button" class="mybutton" value="查看意见" onclick="checkAdviceClick(' + data.id + ')">\
-                    </div>\
-                </div>';
+                content += '\
+                        <div class="ser-top">\
+                            <div class="col-md-12 serve-column" style="cursor: default;">\
+                                <div>\
+                                    <textarea class="myTextArea_Title mytextHeight_1" readonly="readonly" \
+                                        onclick="showPaperClick('+paper.id+')">'+paper.title+'</textarea>\
+                                </div>\
+                                <div>\
+                                    <textarea class="myTextArea_Title" style="height:0px;" readonly="readonly"></textarea>\
+                                    <input type="button" class="myImgButton_modify" onclick="addAdviceClick('+paper.id+')">\
+                                    <input type="button" class="myImgButton_comment" onclick="checkAdviceClick('+paper.id+')">\
+                                </div>\
+                                <textarea class="myTextArea_Content" readonly="readonly">'+paperMsg+'</textarea>\
+                            </div>\
+                        </div>\
+                        <div class="clearfix">\
+                        </div>;';
 
                 $(tagID).append(content);
                 $(tagID).show('slow');
@@ -153,17 +177,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 <script type="text/javascript">
     function finalJudgementPage() {
+
         var username = localStorage.getItem("name");
         var role = localStorage.getItem("role");
 
-        var content = '<div class="container">\
-                            <div class="contact-main">\
-                                <h1 class="myheadText" style="font-size:30px">论文名</h1>\
-                                <h1 class="myheadLabel">审批</h1>\
-                                <h1 class="myheadLabel">查看意见</h1>\
-                            </div>\
-                        </div>';
-        $("#finalJudgement").html(content);
+        $("#finalJudgement").html('');
         $("#finalJudgement").show('slow');
 
         var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.status=FinalJudgement";
