@@ -176,6 +176,10 @@
           success: function(msg){
             var obj = eval(msg);
             if (jQuery.isEmptyObject(obj)){
+              $("#my_Content").html(demo_Choicehead + "我还没有论文呢,赶紧去发表吧!" + demo_tail);
+              $("#my_Content").show("slow");
+              $("#my_Choice").html(demo_Choicehead + "欢迎来到国际论文审阅系统" + demo_tail);
+              $("#my_Choice").show("slow");
               return false;
             }
             for (var i = 0; i < obj.Paper.length; ++i){
@@ -267,7 +271,7 @@
       "</div>";
 
     username = localStorage.getItem("name");
-   // username = "qqq";
+    //username = "qsk";
 
     $("#bookstore_welcome").text(username + "  Welcome to Paper System");
     MyPaperClick();
