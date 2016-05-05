@@ -2,10 +2,11 @@ input,textarea{outline:none;}
 
 .myBody
 {
-	background: url(../images/background.jpg) no-repeat;
+	background: url(../images/background_1.jpg) no-repeat;
 	height: 100%; 
 	margin: auto;
 	background-size: 100% 100%;
+	background-attachment: fixed;
 }
 
 .myLoginForm
@@ -220,7 +221,7 @@ input,textarea{outline:none;}
 	float: right;
 	margin-left: 1em;
 	background: url(../images/download_1.jpg) no-repeat;
-	background-size: 118%;
+	background-size: 120%;
 }
 
 .myImgButton_comment
@@ -278,4 +279,62 @@ input,textarea{outline:none;}
 .mytextHeight_4
 {
 	height : 133px;
+}
+
+.my_servecolumn
+{
+	padding-top: 25px!important;
+	padding-bottom: 10px!important;
+}
+
+.myinput
+{
+	margin-top: 10px;
+	width: 100%;
+	font-weight: 400;
+	border-color: rgba(0, 0, 0, 0.20);
+}
+
+.myTitleText
+{
+	font-size: 25px;
+	margin-top: 5px;
+	text-align: left;
+	width: 100%;
+	border: none;
+	font-weight: bold;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+.myTitleContent
+{
+	font-size: 15px;
+	text-align: left;
+	margin-bottom: 5px;
+	width: 100%;
+	border: none;
+	font-size: 20px;
+	font-weight: bold;
+	background-color: rgba(0, 0, 0, 0.03);
+	overflow: hidden;
+	resize : none;
+	background-attachment: fixed;   
+	background-repeat: no-repeat; 
+	border-style: none;
+	height: 65px;
+	border-width: 0;
+	padding: 0;
+	margin: 0;
+	border-style : none;
+	cursor: default;
+}
+
+.myTextColor
+{
+	background-color: rgba(0, 0, 0, 0.03);
+}
+
+.mybanner
+{
+	opacity: 0.3;
 }

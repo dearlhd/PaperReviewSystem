@@ -15,9 +15,9 @@
 <script src="js/jquery-2.2.3.min.js" type="text/javascript"></script>
 
 </head>
-<body>
+<body class="myBody">
   <div id="home" class="header">
-    <div class="container">
+    <div class="container" id="myContainer">
         <div class="header-top">
             <div class="logo">
           <a style="cursor:default;"><h1><span>国际论文</span>_审阅系统</h1></a>
@@ -35,7 +35,7 @@
         </script>
         <div class="clearfix"></div>
       </div>
-      <span class="menu"></span>
+      <span class="menu" style="float: right;"></span>
       <div class="top-menu my_menu" style="float: right;">           
         <ul class="cl-effect-16 my_menuEntity">
           <li><a data-hover="论文查询" onclick="QueryClick();" style="cursor:pointer;">论文查询</a></li>
@@ -53,15 +53,15 @@
     </div>
     <div class="container">
       <div class="clearfix"> </div>
-      <div class="banner two">
+      <div class="banner two mybanner">
           <h2 class="tittle" id="bookstore_welcome">Welcome</h2>
       </div>
     </div>
     </div>
     
-  <div class="about two">
+  <div class="about two myBody" id="moving_body">
     <div class="container">
-      <h3 class="tittle" id="myEntityTittle">大家好</h3>
+      <h3 class="tittle" id="myEntityTittle" style="margin-bottom: 0px;">大家好</h3>
       <div class="about-top">
         <div class="col-md-9 about-text" id="my_Content">
 
@@ -72,9 +72,9 @@
               </div>
               <textarea class='myTextArea_Content' style='display:none;' readonly='readonly'></textarea>
             </div>
-        </div>
-        <div class='clearfix'>
-        </div>;
+          </div>
+          <div class='clearfix'>
+          </div>;
 
         </div>
         <div class="col-md-3 ab-text" id="my_Choice">
@@ -221,17 +221,18 @@
 
                   layout = "";
                   var textHeight = "mytextHeight_" + ((Math.floor((obj.Paper[i].title.length - 1) / 44)) + 1);
+                  var MsgHeight = "mytextHeight_" + ((Math.floor((PaperMsg - 1) / 44)) + 1);
 
                   layout = "" +
                     "<div class='ser-top'>" +
-                      "<div class='col-md-12 serve-column' style='cursor: default;'>" +
+                      "<div class='col-md-12 serve-column my_servecolumn' style='cursor: default;'>" +
                         "<div>" +
-                          "<textarea class='myTextArea_Title " + textHeight + "' readonly='readonly' onclick='ShowPaperClick(" + obj.Paper[i].id + ")'>" + obj.Paper[i].title + "</textarea>" +                    
+                          "<textarea class='myTextArea_Title " + textHeight + "' readonly='readonly' onclick='ShowPaperClick(" + obj.Paper[i].id + ")'>" + obj.Paper[i].title + "</textarea>" +  
                           "<input type='button' class='myImgButton_revoke' onclick='cancelPaperClick(" + obj.Paper[i].id + ")'>" +
                           "<input type='button' class='myImgButton_download' onclick='downloadPaperClick(" + obj.Paper[i].id + ")'>" +
-                        "</div>" +  
-                        "<div>" +
-                           "<textarea class='myTextArea_Title' style='height:0px;' readonly='readonly'></textarea>" +        
+                        "</div>" +
+                        "<div>" +                        
+                          "<textarea class='myTextArea_Title' style='height:0px;' readonly='readonly'></textarea>" +        
                           "<input type='button' class='myImgButton_modify' onclick='ModifyPaperClick(" + obj.Paper[i].id + ")'>" +
                           "<input type='button' class='myImgButton_comment' onclick='AdvicePaperClick(" + obj.Paper[i].id + ")'>" +  
                         "</div>" + 
@@ -252,8 +253,13 @@
         });
   }
 
+  window.onresize = function(){
+    $("#moving_body").css("height", document.documentElement.clientHeight.toString() + "px");
+  }
+
   $(document).ready(function(){
-    $("#my_contact").hide();    
+    $("#my_Content").hide();    
+    $("#moving_body").css("height", document.documentElement.clientHeight.toString() + "px");
 
     demo_Contenthead = "" + 
       "<div class='ser-top'>" +
@@ -274,6 +280,7 @@
     //username = "qsk";
 
     $("#bookstore_welcome").text(username + "  Welcome to Paper System");
+    $("#bookstore_welcome").css("color", "rgb(15, 30, 140)");
     MyPaperClick();
 
   });

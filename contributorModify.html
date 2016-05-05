@@ -1,274 +1,310 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>contributorModify</title>
+<title>contributor</title>
+
+<link href="css/sweet-alert.css" rel='stylesheet' type='text/css' />
+<script src="js/sweet-alert.min.js"></script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
-<!-- Custom Theme files -->
-<link href="css/style.css" rel='stylesheet' type='text/css' />	
-<link href="css/myCss.css" rel='stylesheet' type='text/css' />
-<script src="js/jquery-2.2.3.min.js"> </script>
-<script src="js/bootstrap.min.js"> </script>
+<link href="css/main_bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="css/main_my.css" rel='stylesheet' type='text/css' />
+<link href="css/main_style.css" rel="stylesheet" type="text/css" media="all" />
+<script src="js/jquery-2.2.3.min.js" type="text/javascript"></script>
 
 </head>
-<body>
-	<!--start-home-->
-	<div id="home" class="header">
-		<div class="header-bottom">
-			<div class="container">
-				<div class="logo">
-					<a href="index.html"><h1>Paper<span>_System</span></h1></a>
-				</div>
-				<span class="menu"></span>
-				<div class="top-menu">
-					<ul>
-					<nav>
-            <li><a onclick="QueryClick();">Query</a></li> 
-						<li><a onclick="DissertClick();">Dissert</a></li> 
-						<li><a onclick="MyPaperClick();">MyPaper</a></li>
-						<li><a onclick="MyLogOutClick();">LogOut</a></li>	
-					</nav>
-					</ul>
-				</div>
-				
-			<!-- script for menu -->
-				<div class="clearfix"></div>
-			</div>
-		</div>
+<body class="myBody">
+  <div id="home" class="header">
+    <div class="container" id="myContainer">
+        <div class="header-top">
+            <div class="logo">
+          <a style="cursor:default;"><h1><span>国际论文</span>_审阅系统</h1></a>
+        </div>
+        <div class="search">
+          <div id="sb-search" class="sb-search">
+            <input class="sb-search-input" placeholder="Enter your search term..." type="search" name="search" id="search">
+            <input class="sb-search-submit sb-icon-search" value="" id="myqueryButton" onclick="searchButtonClick();">            
+            </div>
+        </div>
+        <script src="js/main_classie.js"></script>
+        <script src="js/main_uisearch.js"></script>
+        <script>
+          new UISearch( document.getElementById( 'sb-search' ) );
+        </script>
+        <div class="clearfix"></div>
+      </div>
+      <span class="menu" style="float: right;"></span>
+      <div class="top-menu my_menu" style="float: right;">           
+        <ul class="cl-effect-16 my_menuEntity">
+          <li><a data-hover="论文查询" onclick="QueryClick();" style="cursor:pointer;">论文查询</a></li>
+          <li><a data-hover="论文创建" onclick="DissertClick();" style="cursor:pointer;">论文创建</a></li>
+          <li><a data-hover="我的论文" onclick="MyPaperClick();" style="cursor:pointer;">我的论文</a></li>
+          <li><a data-hover="离开" onclick="MyLogOutClick();" style="cursor:pointer;">离开</a></li>
+        </ul>
+      </div>
+      <script>
+        $( "span.menu" ).click(function() {
+          $( ".top-menu" ).slideToggle( "slow", function() {
+          });
+        });
+      </script>
+    </div>
+    <div class="container">
+      <div class="clearfix"> </div>
+      <div class="banner two mybanner">
+          <h2 class="tittle" id="bookstore_welcome">Welcome</h2>
+      </div>
+    </div>
+    </div>
+    
+  <div class="about two myBody" id="moving_body">
+    <div class="container">
+      <h3 class="tittle" id="myEntityTittle" style="margin-bottom: 0px;">修改论文</h3>
+      <div class="about-top">
+        <div class="col-md-9 about-text" id="my_Content">
 
-	<div class="banner two">
-		<div class="container">	
-		  <div class="pag-nav">
-				<ul class="p-list">
-					<li><a href="index.html"></a></li>
-				</ul>
-			</div>
+          <div class="ser-top">
+            <div class="col-md-12 serve-column" style="cursor: default;" id="my_Paper">
+            </div>
+        </div>
+        <div class="clearfix">
+        </div>
 
-		</div>   
-	</div>
-	</div>
+        </div>
+        <div class="col-md-3 ab-text" id="my_Choice">
 
-<div class="contact" id="my_contact">
-</div>
-
-<div class="contact">
-</div>
+          <div class="ser-top">
+            <div class="col-md-12 serve-column" style="cursor: default;">
+              <p style="cursor: pointer;" onclick="SubmitPaperClick();">论文提交</p>
+            </div>
+          </div>
+          <div class='clearfix'>
+          </div>
+          
+        </div>
+        <div class="clearfix"> </div>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
-
-
 <script>
-    var my_obj;
-    var paperId;
-    var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
 
-    function SubmitPaperClick(){
-      //alert($("#paper").html());
-      var title = $("#title").val();
-      var unit = $("#unit").val();
-      var address = $("#address").val();
-      var summary = $("#summary").val();
-      var content = $("#content");
-      var keywords = $("#keywords").val();
-      var submittime = my_obj.Paper[0].submittime;
-      var myDate = new Date();
-      var edittime = myDate.getFullYear() + "-" + myDate.getMonth() + "-" + myDate.getDate();
-      paperId = my_obj.Paper[0].id;
+  var username = "";
+  var paperId;
+  var my_obj;
+  var demo_Contenthead = "";
+  var demo_Choicehead = "";
+  var demo_tail = "";
+  var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
 
-      var status = "Delivered";//////////////////////////////////////////////////////////////////////////////////update
-      if ((title != null) && (unit != null) && (address != null) && (summary != null) && (keywords != null) && (content != null))//not null
-      {
-        $.ajax({
-          url: myurl + "Keywords/?Keywords.match.id=" + paperId,
-          type : "GET",
-          async : false,
-          success : function(msg){
-          var obj = eval(msg);    
-            if (jQuery.isEmptyObject(obj)){
-              return false;
-            }
-           // console.log("IN 1");
-            for (var i = 0; i < obj.Keywords.length; ++i){
-              console.log(obj.Keywords[i].id);
-              $.ajax({
-                url : myurl + "Keywords/" + obj.Keywords[i].id,
-                async : false,
-                type : "DELETE",
-                success : function(){
-                  //console.log("In 2");
-                }
-              });
-            }
-         }
-        });
+  function searchButtonClick(){
+    $("#sb-search").toggleClass("sb-search-open");
+  }
 
-        var paperInfo={
-            ////////////////////////
-          "title" : title,
-          "author" : my_obj.Paper[0].author,
-          "unit" : unit,
-          "address" : address,
-          "summary" : summary,
-          "submittime" : submittime,
-          "edittime" : edittime,
-          "status" :　status
-        };
-        //alert(username);
-        //alert(submittime);
-        $.ajax({
-          url: myurl + "Paper/" + paperId,
-          contentType: "application/json",
-          type: "PUT",
-          async : false,
-          data: JSON.stringify(paperInfo),
-          success: function(msg){
-              var obj = eval(msg);
-              var paperId = obj.id;
-            //alert(paperId);
-           // console.log("In put paper");
+  function MyLogOutClick(){
+    window.location.href = "login.html";
+  }
 
-              var files = $(":file")[0].files;
-            //alert(files);
-              var formData = new FormData();
-              formData.append("file", files[0]);
-              $.ajax({
-                  url: myurl + "Paper/" + paperId,
-                  type: "POST",
-                  data: formData,
-                  async : false,
-                  contentType: false,
-                  processData: false,
-                  success: function(data){
-                      //console.log(data);
-                     // alert("add file");
-                  } 
-              });
-              //do keywords
+  function QueryClick(){
+    window.open("queryPaper.html", "", "");
+  }
 
-              var keylist = keywords.split(";");
-              //alert(keylist.length);
-              
-              for (var i = 0; i < keylist.length; ++i){
-                var keywordsInfo={
-                  "word" : keylist[i],
-                  "match" : {"id" : paperId, "type" : "Paper"}
-                };
-                console.log(keywordsInfo.word);
-                $.ajax({
-                  url: myurl + "Keywords/",
-                  contentType: "application/json",
-                  async : false,
-                  type: "POST",
-                  data: JSON.stringify(keywordsInfo),
-                  success: function(msg){
-                    //alert("add keywords" + keylist[i]);
-                    //console.log("In Keywords" + keywordsInfo.word);
-                  }
-                });
-              
-              }
+  function MyPaperClick(){
+    window.location.href = "contributor.html";
+  }
+
+  function DissertClick(){
+    window.location.href = "contributorDissert.html";
+  }
+
+  function SubmitPaperClick(){
+    var title = $("#unit").val();
+    var unit = $("#unit").val();
+    var address = $("#address").val();
+    var summary = $("#summary").val();
+    var content = $("#content");
+    var keywords = $("#keywords").val();
+    var submittime = my_obj.Paper[0].submittime;
+    var myDate = new Date();
+    var edittime = myDate.getFullYear() + "-" + myDate.getMonth() + "-" + myDate.getDate();
+    paperId = my_obj.Paper[0].id;
+    var status = "Delivered";
+    if ((title.length > 0) && (unit.length > 0) && (address.length > 0) && (summary.length > 0) && (keywords.length > 0) && (content.val() != ""))
+    {
+      $.ajax({
+        url: myurl + "Keywords/?Keywords.match.id=" + paperId,
+        type : "GET",
+        async : false,
+        success : function(msg){
+        var obj = eval(msg);    
+          if (jQuery.isEmptyObject(obj)){
+            return false;
           }
-        });
-      }
-      else 
-      {
-        sweetAlert("以上几项不能为空!");
-        return false;
-      }
+          for (var i = 0; i < obj.Keywords.length; ++i){
+            $.ajax({
+              url : myurl + "Keywords/" + obj.Keywords[i].id,
+              async : false,
+              type : "DELETE",
+              success : function(){
+              }
+            });
+          }
+        }
+      });
 
-      window.location.href = "contributor.html";
-      
+      var paperInfo={
+        "title" : title,
+        "author" : my_obj.Paper[0].author,
+        "unit" : unit,
+        "address" : address,
+        "summary" : summary,
+        "submittime" : submittime,
+        "edittime" : edittime,
+        "status" :　status
+      };
+      $.ajax({
+        url: myurl + "Paper/" + paperId,
+        contentType: "application/json",
+        type: "PUT",
+        async : false,
+        data: JSON.stringify(paperInfo),
+        success: function(msg){
+          var obj = eval(msg);
+          var paperId = obj.id;
+          var files = $(":file")[0].files;
+          var formData = new FormData();
+          formData.append("file", files[0]);
+          $.ajax({
+            url: myurl + "Paper/" + paperId,
+            type: "POST",
+            data: formData,
+            async : false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+            } 
+          });
+
+          var keylist = keywords.split(";");              
+          for (var i = 0; i < keylist.length; ++i){
+            var keywordsInfo={
+              "word" : keylist[i],
+              "match" : {"id" : paperId, "type" : "Paper"}
+            };
+            $.ajax({
+              url: myurl + "Keywords/",
+              contentType: "application/json",
+              async : false,
+              type: "POST",
+              data: JSON.stringify(keywordsInfo),
+              success: function(msg){
+              }
+            });              
+          }
+        }
+      });
+    }
+    else 
+    {
+      sweetAlert("以上几项不能为空!");
+      return false;
+    }
+    window.location.href = "contributor.html"; 
       /*if (sweetAlert("论文修改成功！") < 2)
       {
         window.location.href = "contributor.html";
       }*/
-    }
+  }
 
-    function ModifyClick(){
-
-      /*$("#my_contact").html("<h1 class='myheadText'>Plllaper</h1><h1 class='myheadLabel'>Modllllify</h1><h1 class='myheadLabel'>Advillce</h1><h1 class='myheadLabel'>Status</h1>");
-      alert($("#my_contact").html());*/
-      var keywords = "";
-      $("#my_contact").hide();
-      $.ajax({
-        url : myurl + "Paper/?Paper.id=" + paperId,
-        type : "GET",
-        success : function(msg){
-          my_obj = eval(msg);
-          if (jQuery.isEmptyObject(my_obj)){
-            return false;
-          }
-
-         // console.log("In there");
-        //  console.log(my_obj.Paper[0].title);
-
-          $.ajax({
-            url: myurl + "Keywords/?Keywords.match.id=" + my_obj.Paper[0].id,
-            type : "GET",
-            success : function(_msg){
-              var _obj = eval(_msg);    
-              if (jQuery.isEmptyObject(_obj)){
-                return false;
-              }
-              for (var i = 0; i < _obj.Keywords.length; ++i)
-                if (i < (_obj.Keywords.length - 1))
-                  keywords += (_obj.Keywords[i].word + ";");
-                else keywords += _obj.Keywords[i].word;
-                //optimize
-
-              $("#my_contact").html("" +
-                "<div class='container' id='paper'>" + 
-                  "<input class='myinput' id='title' placeholder='标题' value='" + my_obj.Paper[0].title + "'>" + 
-                  "<input class='myinput' id='unit' placeholder='作者单位' value='" + my_obj.Paper[0].unit + "'>" + 
-                  "<input class='myinput' id='address' placeholder='通讯地址' value='" + my_obj.Paper[0].address + "'>" + 
-                  "<input class='myinput' id='keywords' placeholder='关键词(用分号隔开)' value='" + keywords + "'>" +
-                  "<textarea class='myinput' style='height:300px;' id='summary' placeholder='摘要'>" + my_obj.Paper[0].summary + "</textarea>" +  
-                  "<input type='file' class='myinput' style='width:40%' name='file' id='content' placeholder='上传正文pdf'>" + 
-                  "<input type='button' class='mybutton' style='float:none;'' value='提交'' onclick='SubmitPaperClick();''>" +
-                "</div>"
-              );
+  function ModifyClick(){  
+    var keywords = "";
+    $("#my_Paper").hide();
+    $.ajax({
+      url : myurl + "Paper/?Paper.id=" + paperId,
+      type : "GET",
+      success : function(msg){
+        my_obj = eval(msg);
+        if (jQuery.isEmptyObject(my_obj)){
+          return false;
+        }
+        $.ajax({
+          url: myurl + "Keywords/?Keywords.match.id=" + my_obj.Paper[0].id,
+          async : false,
+          type : "GET",
+          success : function(_msg){
+            var _obj = eval(_msg);    
+            if (jQuery.isEmptyObject(_obj)){
+              return false;
             }
-          });
-          $("#my_contact").show("slow");
-        }
+            for (var i = 0; i < _obj.Keywords.length; ++i)
+              if (i < (_obj.Keywords.length - 1))
+                keywords += (_obj.Keywords[i].word + ";");
+              else keywords += _obj.Keywords[i].word;
+              
+            var layout = "" +
+              "<div><input class='myinput' id='title' placeholder='标题' value='" + my_obj.Paper[0].title + "'></div>" + 
+              "<div><input class='myinput' id='unit' placeholder='作者单位' value='" + my_obj.Paper[0].unit + "'></div>" + 
+              "<div><input class='myinput' id='address' placeholder='通讯地址' value='" + my_obj.Paper[0].address + "'></div>" + 
+              "<div><input class='myinput' id='keywords' placeholder='关键词(用分号隔开)' value='" + keywords + "'></div>" +
+              "<div><textarea class='myinput' style='height:300px;' id='summary' placeholder='摘要'>" + my_obj.Paper[0].summary + "</textarea></div>" +  
+              "<div><input type='file' class='myinput' style='width:40%' name='file' id='content' placeholder='上传正文pdf'></div>";
+            $("#my_Paper").html(layout);
+          }
+        });
 
-      });
-
-    }
-
-    function MyPaperClick(){
-      window.location.href = "contributor.html";
-    }
-
-    function MyLogOutClick(){
-      window.location.href = "login.html";
-    }
-
-    function QueryClick(){
-      window.open("queryPaper.html", "", "");
-    }
-
-    function GetRequest() {
-      var url = location.search; //获取url中"?"符后的字串
-      var theRequest = new Object();
-      if (url.indexOf("?") != -1) {
-        var str = url.substr(1);
-        strs = str.split("&");
-        for(var i = 0; i < strs.length; i ++) {
-          theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
-        }
+        $("#my_Paper").show("slow");
       }
-      return theRequest;
-    }
-
-    $(document).ready(function(){
-      var Request = new Object();
-      Request = GetRequest();
-      paperId = Request['pid'];
-      ModifyClick();
     });
+  }
+
+  window.onresize = function(){
+    $("#moving_body").css("height", document.documentElement.clientHeight.toString() + "px");
+  }
+  
+  function GetRequest() {
+    var url = location.search; //获取url中"?"符后的字串
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      strs = str.split("&");
+      for(var i = 0; i < strs.length; i ++) {
+        theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+      }
+    }
+    return theRequest;
+  }
+
+  $(document).ready(function(){
+    $("#moving_body").css("height", document.documentElement.clientHeight.toString() + "px");
+
+    demo_Contenthead = "" + 
+      "<div class='ser-top'>" +
+        "<div class='col-md-12 serve-column'>" +
+          "<p class='para'>";
+    
+    demo_Choicehead = "" +  
+      "<div class='ser-top'>" +
+        "<div class='col-md-12 serve-column'>" +
+          "<p class='para'>";
+    
+    demo_tail = "" + 
+          "</p>" +  
+        "</div>" +
+      "</div>";
+
+    username = localStorage.getItem("name");
+    var Request = new Object();
+    Request = GetRequest();
+    paperId = Request['pid'];
+    //username = "qsk";
+
+    $("#bookstore_welcome").text(username + "  Welcome to Paper System");
+    $("#bookstore_welcome").css("color", "rgb(15, 30, 140)");
+    ModifyClick();
+  });
 
 </script>
