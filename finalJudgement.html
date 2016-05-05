@@ -85,7 +85,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         finalJudgementPage();
     })
 
+
+    function sortPaperByCredit(papers) {
+        for (var i = 0; i < papers.length; i++) {
+            for (var j = i+1; j < papers.length; j++) {
+                if (papers[i].credit < papers[j].credit) {
+                    var tmp = new Object();
+                    tmp = papers[i];
+                    papers[i] = papers[j];
+                    papers[j] = tmp;
+                }
+            }
+        }
+        return papers;
+    }
+
     function showPaperInfo(data, flag, tagID) {
+        console.log("credit: "+data.credit);
         var content = '';
         var paperMsg = "作者: " + data.author + "  提交时间: " + data.submittime + "  关键词: ";
 
@@ -154,7 +170,38 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             success: function (data) {
                 var obj = eval(data);
                 var papers = obj.Paper;
+                console.log(papers);
                 var color = 0;
+                for (var i = 0; i < papers.length; i++) {
+                    $.ajax({
+                        async:false,
+                        url:"http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.commentwhat.id="+papers[i].id,
+                        type:"GET",
+                        success:function (commentsData) {
+                            var credit = 0;
+                            var comments = eval(commentsData).Comment;
+                            for (var j = 0; j < comments.length; j++) {
+                                if (comments[i].advice == "Strong Accept") credit += 6;
+                                else if (comments[i].advice == "Accept") credit += 5;
+                                else if (comments[i].advice == "Weak Accept") credit += 4;
+                                else if (comments[i].advice == "Borderline Paper") credit += 3;
+                                else if (comments[i].advice == "Weak Reject") credit += 2;
+                                else if (comments[i].advice == "Reject") credit += 1;
+                                else if (comments[i].advice == "Strong Reject") credit += 0;
+
+                                if (comments[i].confidence == "Expert") credit += 4;
+                                else if (comments[i].confidence == "High") credit += 3;
+                                else if (comments[i].confidence == "Medium") credit += 2;
+                                else if (comments[i].confidence == "Low") credit += 1;
+                                else if (comments[i].confidence == "Null") credit += 0;
+                            }
+                            papers[i].credit = credit;
+                        }
+                    });
+                }
+
+                papers = sortPaperByCredit(papers);
+                console.log(papers);
                 for (var i = 0; i < papers.length; i++) {
                     showPaperInfo(papers[i], color, "#finalJudgement");
                     color++;
@@ -178,6 +225,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         <button type="button" class="btn btn-danger btn-lg" onclick="finalJudge('+paperID+',0)">拒绝</button>';
         $("#FinalJudgeBtn").html(content);
         $("#myModal").modal();
+
+
     }
 
     function finalJudge(paperID,tag) {
@@ -203,6 +252,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     data: JSON.stringify(oldPaper),
                     success: function (newpaper) {
                         console.log(eval(newpaper));
+                        console.log(oldPaper.id);
+                        archivePaper(oldPaper.id);
                     }
                 });
 
@@ -210,6 +261,124 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
             }
         });
+
+    }
+
+    function archivePaper(obj) {
+        var rdfXML = "";
+        myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
+        $.ajax({
+            url : myurl + "Paper/?Paper.id=" + obj,
+            async : false,
+            type : "GET",
+            success : function(msg){
+                my_obj = eval(msg);
+                if (jQuery.isEmptyObject(my_obj)){
+                    return false;
+                }
+             $.ajax({
+             url: myurl + "Keywords/?Keywords.match.id=" + my_obj.Paper[0].id,
+             async : false,
+             type : "GET",
+             success : function(_msg){
+             var _obj = eval(_msg);
+             if (jQuery.isEmptyObject(_obj)){
+             return false;
+             }
+             var keywords_array = new Array();
+             var kw_len = _obj.Keywords.length;
+             for (var i = 0; i < kw_len; ++i){
+             keywords_array[i] = _obj.Keywords[i].word;
+             }
+             var tags_array = new Array();
+             var tg_len = 0;
+
+             $.ajax({
+             url : myurl + "Tags/?Tags.tagtopaper.id=" + my_obj.Paper[0].id,
+             type : "GET",
+             async : false,
+             success : function(tg_msg){
+             var tg_obj = eval(tg_msg);
+             if (!jQuery.isEmptyObject(tg_obj)){
+             tg_len = tg_obj.Tags.length;
+             for (var i = 0; i < tg_len; ++i){
+             tags_array[i] = tg_obj.Tags[i].word;
+             }
+             }
+             }
+             });
+
+             rdfXML = "" +
+             "<?xml version='1.0'?>" +
+             "<rdf:RDF" +
+             "xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
+             "xmlns:cd='" + myurl + "Paper/" + "'" +
+             "xmlns:kw='" + myurl + "Keywords/" + "'" +
+             "xmlns:tg='" + myurl + "Tags/" + "'" +
+             "xmlns:cont='http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/'>";
+
+             rdfXML += "" +
+             "<rdf:Description rdf:about='" + myurl + "Paper/" + my_obj.Paper[0].id + "'>" +
+             "<cd:type>paper</cd:type>" +
+             "<cd:id>" + my_obj.Paper[0].id + "</cd:id>" +
+             "<cd:title>" + my_obj.Paper[0].title + "</cd:title>" +
+             "<cd:author>" + my_obj.Paper[0].author + "</cd:author>" +
+             "<cd:unit>" + my_obj.Paper[0].unit + "</cd:unit>" +
+             "<cd:address>" + my_obj.Paper[0].address + "</cd:address>" +
+             "<cd:summary>" + my_obj.Paper[0].summary + "</cd:summary>" +
+             "<cd:submittime>" + my_obj.Paper[0].submittime + "</cd:submittime>" +
+             "<cd:status>" + my_obj.Paper[0].status + "</cd:status>" +
+             "<cd:edittime>" + my_obj.Paper[0].edittime + "</cd:edittime>";
+
+             rdfXML += "<kw:word>" +
+             "<rdf:Bag>";
+             for (var i = 0; i < kw_len; ++i){
+             rdfXML +=   "<rdf:li>" + keywords_array[i] + "</rdf:li>";
+             }
+             rdfXML +=   "</rdf:Bag>" +
+             "</kw:word>";
+
+             rdfXML += "<tg:word>" +
+             "<rdf:Bag>";
+             for (var i = 0; i < tg_len; ++i){
+             rdfXML +=   "<rdf:li>" + tags_array[i] + "</rdf:li>"
+             }
+             rdfXML +=   "</rdf:Bag>" +
+             "</tg:word>";
+
+             rdfXML += "<cont:content rdf:resource='http://202.120.40.73:28080/file/Ubfca480238c858/PaperRev/Paper/" + my_obj.Paper[0].id + "'/>";
+
+             rdfXML += "</rdf:Description>";
+
+             rdfXML += "</rdf:RDF>";
+             //alert(rdfXML);
+             }
+             });
+             //alert(rdfXML);
+
+             var paperInfo = {
+             "title" : my_obj.Paper[0].title,
+             "author" : my_obj.Paper[0].author,
+             "unit" : my_obj.Paper[0].unit,
+             "address" : my_obj.Paper[0].address,
+             "summary" : my_obj.Paper[0].summary,
+             "content" : rdfXML,
+             "submittime" : my_obj.Paper[0].submittime,
+             "status" : my_obj.Paper[0].status,
+             "edittime" : my_obj.Paper[0].edittime
+             };
+
+             $.ajax({
+             url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/" + "Paper/" + my_obj.Paper[0].id,
+             contentType: "application/json",
+             type: "PUT",
+             async : false,
+             data: JSON.stringify(paperInfo),
+             success: function(msg){
+             }
+             });
+             }
+         });
 
     }
 

@@ -64,7 +64,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                        <h4 class="modal-title" id="myModalLabel">Add Reviewer</h4>
+                        <h4 class="modal-title" id="myModalLabel">Distribute Reviewer</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -93,6 +93,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </div>
 
 <script type="text/javascript">
+    var users = new Array();
+    var fuzzyUsers = new Array();
+
     $(document).ready(function(){
         $('#multiselect').multiselect();
 
@@ -157,15 +160,37 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
     function distributeClick(paperID) {
         var selectInfo = '';
+        var keywords;
 
-        var users;
         $.ajax({
             async:false,
             url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.role=reviewer",
             type: "GET",
             success: function (usersret) {
                 var obj = eval(usersret);
-                users = obj.User;
+                fuzzyUsers = obj.User;
+                console.log("in fuzzyUsers");
+                console.log(fuzzyUsers);
+                // 获得文章的keyword
+                for (var i = 0; i < fuzzyUsers.length; i++) {
+                    var keyUrl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Keywords/?Keywords.match.id="
+                            +paperID + "&Keywords.word=(like)"+fuzzyUsers[i].feature;
+                    console.log(keyUrl);
+                    $.ajax({
+                        async:false,
+                        url:keyUrl,
+                        type:"GET",
+                        success:function (keywordData) {
+                            keywords = eval(keywordData)
+                            console.log("in keyword return");
+                            console.log(keywords);
+                            if(!jQuery.isEmptyObject(keywords)) {
+                                users.add(fuzzyUsers[i]);
+                                console.log(users)
+                            }
+                        }
+                    });
+                }
             }
         });
 
@@ -214,6 +239,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         });
 
         for (var i = 0; i < usersID.length; i++) {
+            //
             $.ajax({
                 async:false,
                 url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/"+usersID[i],

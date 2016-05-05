@@ -30,7 +30,7 @@
             <div class="top-menu">
                 <ul>
                     <nav>
-                        <li><a onclick="QueryClick();">Query</a></li>
+                        <li><a onclick="test();">Query</a></li>
                         <li><a onclick="DissertClick();">Dissert</a></li>
                         <li><a onclick="MyPaperClick();">MyPaper</a></li>
                         <li><a onclick="MyLogOutClick();">LogOut</a></li>
@@ -65,226 +65,16 @@
 
 
 <script>
-    var cnt = 0;
-    var username;
-    var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
-
-    function display_alert(){
-        alert("I am an alert box!!")
+    function f1(m, n) {
+        var tmp = n;
+        n = m;
+        m = tmp;
     }
 
-    function ShowPaperClick(obj){
-        window.open( "viewPaper.html?pid=" + obj, "", "top=150, left=250, width=1400, height=800");
+    function test () {
+        var m = 5;
+        var n = 10;
+        f1(m, n);
+        console.log("m="+m+" n="+n);
     }
-
-    function ModifyPaperClick(obj){
-        //alert();
-        window.location.href = "contributorModify.html?pid=" + obj;
-    }
-
-    function downloadPaperClick(obj){
-
-        var rdfXML = "";
-        $.ajax({
-            url : myurl + "Paper/?Paper.id=" + obj,
-            type : "GET",
-            success : function(msg){
-                my_obj = eval(msg);
-                if (jQuery.isEmptyObject(my_obj)){
-                    return false;
-                }
-                $.ajax({
-                    url: myurl + "Keywords/?Keywords.match.id=" + my_obj.Paper[0].id,
-                    type : "GET",
-                    success : function(_msg){
-                        var _obj = eval(_msg);
-                        if (jQuery.isEmptyObject(_obj)){
-                            return false;
-                        }
-                        var keywords_array = new Array();
-                        var len = _obj.Keywords.length;
-                        for (var i = 0; i < len; ++i){
-                            keywords_array[i] = _obj.Keywords[i].match.id;
-                        }
-                        rdfXML = "" +
-                                "<?xml version='1.0'?>" +
-                                "<rdf:RDF" +
-                                "xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
-                                "xmlns:cd='" + myurl + "Paper/" + "'" +
-                                "xmlns:kw='" + myurl + "Keywords/" + "'" +
-                                "xmlns:tg='" + myurl + "Tags/" + "'>";
-                        rdfXML += "" +
-                                "<rdf:Description rdf:about='" + myurl + "Paper/" + my_obj.Paper[0].id + "'>" +
-                                "<cd:type>paper</cd:type>" +
-                                "<cd:id>" + my_obj.Paper[0].id + "</cd:id>" +
-                                "<cd:title>" + my_obj.Paper[0].title + "</cd:title>" +
-                                "<cd:author>" + my_obj.Paper[0].author + "</cd:author>" +
-                                "<cd:unit>" + my_obj.Paper[0].unit + "</cd:unit>" +
-                                "<cd:address>" + my_obj.Paper[0].address + "</cd:address>" +
-                                "<cd:summary>" + my_obj.Paper[0].summary + "</cd:summary>" +
-                                "<cd:submittime>" + my_obj.Paper[0].submittime + "</cd:submittime>" +
-                                "<cd:status>" + my_obj.Paper[0].status + "</cd:status>" +
-                                "<cd:edittime>" + my_obj.Paper[0].edittime + "</cd:edittime>" +
-                                "<kw:>" +
-                                ///////////////////////////////////////////////////////////////////////////////
-                                "</kw:>" +
-
-                                "</rdf:Description>";
-                        rdfXML += "</rdf:RDF>";
-                    }
-                });
-            }
-        });
-
-    }
-
-    function cancelPaperClick(obj){
-        //  alert("cancel");
-        $.ajax({
-            url : myurl + "Paper/?Paper.id=" + obj,
-            type : "GET",
-            success : function(_msg){
-                var _obj = eval(_msg);
-                var _status = _obj.Paper[0].status;
-                //alert(obj.Paper[0].status);
-                if (_status == "Canceled")
-                    sweetAlert("论文已经撤销");
-                else if (_status != "Passed")
-                    sweetAlert("无法撤销没有通过的论文");
-                else
-                {
-                    _obj.Paper[0].status = "Canceled";
-                    $.ajax({
-                        url : myurl + "Paper/" + obj,
-                        contentType : "application/json",
-                        type : "PUT",
-                        data : JSON.stringify(_obj.Paper[0]),
-                        success : function(msg){
-                            sweetAlert("撤销成功");
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    function AdvicePaperClick(obj){
-        //alert(obj);
-        window.open("viewAdvice.html?pid=" + obj, "", "top=150, left=300, width=600, height=400");
-    }
-
-    function QueryClick(){
-        window.open("queryPaper.html", "", "");
-    }
-
-    function DissertClick(){
-        window.location.href = "contributorDissert.html";
-    }
-
-    function MyPaperClick(){
-        console.log("my paper: "+username);
-        $("#my_contact").hide();
-        var layout = "";
-        layout =
-                "<div class='container'>" +
-                "<div class='contact-main'>" +
-                "<h1 class='myheadText'>Paper</h1>" +
-                "<h1 class='myheadLabel'>Modify</h1>" +
-                "<h1 class='myheadLabel'>Advice</h1>" +
-                "<h1 class='myheadLabel'>Status</h1>" +
-                "</div>" +
-                "</div>";
-
-        $("#my_contact").html(layout);
-        console.log(username);
-        $.ajax({
-            url: myurl + "Paper/?Paper.author=" + username,
-            type: "GET",
-            success: function(msg){
-                var obj = eval(msg);
-                if (jQuery.isEmptyObject(obj)){
-                    return false;
-                }
-                for (var i = 0; i < obj.Paper.length; ++i){
-                    $.ajax({
-                        url: myurl + "Keywords/?Keywords.match.id=" + obj.Paper[i].id,
-                        type : "GET",
-                        async : false,
-                        success: function(_msg){
-                            var _obj = eval(_msg);
-                            if (jQuery.isEmptyObject(_obj)){
-                                return false;
-                            }
-
-                            var k = _obj.Keywords.length;
-                            var PaperMsg = "";
-
-                            PaperMsg += ("作者: " + obj.Paper[i].author + "  提交时间: " + obj.Paper[i].submittime + "  关键词: ");
-
-                            for (var j = 0; j < k; ++j) {
-                                PaperMsg += (_obj.Keywords[j].word + " ");
-                            }
-                            cnt++;
-                            layout = "";
-                            var textColor = "";
-                            var paper_status = "";
-                            switch (obj.Paper[i].status){
-                                case "Delivered": paper_status = "已提交";
-                                    break;
-                                case "Firsttrial": paper_status = "初审中";
-                                    break;
-                                case "Finaljudgment": paper_status = "终审中";
-                                    break;
-                                case "Passed": paper_status = "已通过";
-                                    break;
-                                case "Failed": paper_status = "未通过";
-                                    break;
-                                case "Canceled": paper_status = "已撤回";
-                                    break;
-                                default: break;
-                            }
-                            console.log(paper_status);
-                            var textHeight = "mytextHeight_" + ((Math.floor((obj.Paper[i].title.length - 1) / 50)) + 1);
-                            if (cnt % 2 == 1)
-                                textColor = "style='background: #d9d9d9;'";
-                            else textColor = "style='background: #f0f0f0;'";
-                            layout += "<div class='container'" + textColor + ">";
-                            layout +=
-                                    ("<div>" +
-                                    "<div class='mytext'>" +
-                                    "<textarea readonly='readonly' class='myTitleText myTitleTextAdd myTextArea " + textHeight + "'" + textColor + " onclick='ShowPaperClick(" + obj.Paper[i].id + ")'>" + obj.Paper[i].title + "</textarea>" +
-                                    "<h1 class='myMsgText'>" + PaperMsg + "</h1>" +
-                                    "</div>"　+
-                                    "<input type='button' class='mybutton' value='Modify' onclick='ModifyPaperClick(" + obj.Paper[i].id + ")'>" +
-                                    "<input type='button' class='mybutton' value='Advice' onclick='AdvicePaperClick(" + obj.Paper[i].id + ")'>" +
-                                    "<input class='myStatusText' value='" + paper_status + "'" + textColor + " disabled='disabled'>" +
-                                    "<input type='button' class='myImgButton_revoke' onclick='cancelPaperClick(" + obj.Paper[i].id + ")'>" +
-                                    "<input type='button' class='myImgButton_download' onclick='downloadPaperClick(" + obj.Paper[i].id + ")'>" +
-                                    "</div>" +
-                                    "</div>");
-
-                            $("#my_contact").append(layout);
-                        }
-                    });
-                }
-                $("#my_contact").show("slow");
-            }
-
-        });
-
-    }
-
-    function MyLogOutClick(){
-        window.location.href = "login.html";
-    }
-
-    $(document).ready(function(){
-        //Do MyPaper
-        $("#my_contact").hide();
-        username = localStorage.getItem("name");
-        username = "writer";
-        MyPaperClick();
-
-    });
-
 </script>
