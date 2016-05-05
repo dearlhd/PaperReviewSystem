@@ -62,10 +62,52 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 </div>
 
-<div class="contact">
+<div class="contact" id="modalpos">
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    <h4 class="modal-title" id="myModalLabel">请选择评审意见</h4>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <table align="center">
+                        <tr>
+                            <td><label>审稿意见</label></td>
+                            <td><select id="advice" class="form-control">
+                                <option value="Strong Accept">Strong Accept</option>
+                                <option value="Accept">Accept</option>
+                                <option value="Weak Accept">Weak Accept</option>
+                                <option value="Borderline Paper">Borderline Paper</option>
+                                <option value="Weak Reject">Weak Reject</option>
+                                <option value="Reject">Reject</option>
+                                <option value="Strong Reject">Strong Reject</option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td><label>信任度</label></td>
+                            <td><select id="confidence" class="form-control">
+                                <option value="Expert">Expert</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                                <option value="Null">Null</option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td><label>建议</label></td>
+                            <td><textarea class="form-control" rows="3" id="suggestion"></textarea></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer" id="modal-footer">
 
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->';
 </div>
-
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -89,48 +131,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         paperMsg += keywords.Keywords[i].word;
                     }
                 }
-                content += '\
-                        <div class="modal fade" id="Modal'+data.id+'" tabindex="-1" role="dialog"\
-                             aria-labelledby="myModalLabel" aria-hidden="true">\
-                            <div class="modal-dialog">\
-                                <div class="modal-content">\
-                                    <div class="modal-header">\
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>\
-                                        <h4 class="modal-title" id="myModalLabel">请选择评审意见</h4>\
-                                    </div>\
-                                    <div class="modal-body">\
-                                        <table align="center">\
-                                            <tr>\
-                                                <td><label for="name">审稿意见</label></td>\
-                                                <td><select id="advice'+data.id+'" class="form-control"> \
-                                                    <option value="Strong Accept">Strong Accept</option>\
-                                                    <option value="Accept">Accept</option>\
-                                                    <option value="Weak Accept">Weak Accept</option>\
-                                                    <option value="Borderline Paper">Borderline Paper</option>\
-                                                    <option value="Weak Reject">Weak Reject</option>\
-                                                    <option value="Reject">Reject</option>\
-                                                    <option value="Strong Reject">Strong Reject</option>\
-                                                </select></td>\
-                                            </tr>\
-                                            <tr>\
-                                                <td><label for="name">信任度</label></td>\
-                                                <td><select id="confidence'+data.id+'" class="form-control"> \
-                                                    <option value="Expert">Expert</option>\
-                                                    <option value="High">High</option>\
-                                                    <option value="Medium">Medium</option>\
-                                                    <option value="Low">Low</option>\
-                                                    <option value="Null">Null</option>\
-                                                </select></td>\
-                                            </tr>\
-                                        </table>\
-                                    </div>\
-                                    <div class="modal-footer">\
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>\
-                                        <button type="button" class="btn btn-primary" onclick="addAdvice('+data.id+')">提交</button>\
-                                    </div>\
-                                </div><!-- /.modal-content -->\
-                            </div><!-- /.modal-dialog -->\
-                        </div><!-- /.modal -->';
 
                 if (flag % 2 == 0) {
                     content += '<div class="container" style="background: #d9d9d9;">\
@@ -153,6 +153,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         <input type="button" class="mybutton" value="查看意见" onclick="checkAdviceClick(' + data.id + ')">\
                     </div>\
                 </div>';
+
+
+
 
                 $(tagID).append(content);
                 $(tagID).show('slow');
@@ -357,13 +360,21 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     }
 
     function addAdviceClick(paperID) {
-        $("#Modal"+paperID).modal();
+        var footer =  '\
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>\
+                    <button type="button" class="btn btn-primary" onclick="addAdvice('+paperID+')">提交</button>';
+        $("#modal-footer").html(footer);
+
+
+        $("#myModal").modal();
     }
 
     function addAdvice(paperID) {
-        var advice = $("#advice"+paperID).val();
-        var confidence = $("#confidence"+paperID).val();
+        var advice = $("#advice").val();
+        var confidence = $("#confidence").val();
+        var suggestion = $("#suggestion").val();
         var username = localStorage.getItem("name");
+        console.log("add advice: " + advice);
 
         myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
         myurl = myurl + "&Comment.commentwhat.id="+paperID;
@@ -459,17 +470,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                     });
                                 }
                             });
-
-
-
                         }
                     });
                 }
             }
         });
 
-
-        $("#Modal"+paperID).modal("hide");
+        $("#myModal").modal("hide");
+        unReviewPage();
     }
 
 
