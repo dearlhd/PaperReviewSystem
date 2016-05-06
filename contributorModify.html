@@ -246,11 +246,17 @@
               else keywords += _obj.Keywords[i].word;
               
             var layout = "" +
+              "<div><input class='myTitleText' disabled='disabled' value='论文标题'></div>" +
               "<div><input class='myinput' id='title' placeholder='标题' value='" + my_obj.Paper[0].title + "'></div>" + 
+              "<div><input class='myTitleText' disabled='disabled' value='作者单位'></div>" +
               "<div><input class='myinput' id='unit' placeholder='作者单位' value='" + my_obj.Paper[0].unit + "'></div>" + 
+              "<div><input class='myTitleText' disabled='disabled' value='通讯地址'></div>" +
               "<div><input class='myinput' id='address' placeholder='通讯地址' value='" + my_obj.Paper[0].address + "'></div>" + 
+              "<div><input class='myTitleText' disabled='disabled' value='关键词'></div>" +
               "<div><input class='myinput' id='keywords' placeholder='关键词(用分号隔开)' value='" + keywords + "'></div>" +
+              "<div><input class='myTitleText' disabled='disabled' value='摘要'></div>" +
               "<div><textarea class='myinput' style='height:300px;' id='summary' placeholder='摘要'>" + my_obj.Paper[0].summary + "</textarea></div>" +  
+              "<div><input class='myTitleText' disabled='disabled' value='上传文件'></div>" +
               "<div><input type='file' class='myinput' style='width:40%' name='file' id='content' placeholder='上传正文pdf'></div>";
             $("#my_Paper").html(layout);
           }
