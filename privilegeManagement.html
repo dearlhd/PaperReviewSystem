@@ -16,7 +16,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <script src="js/sweet-alert.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
 </head>
-<body>
+<body class="myBody">
 <div id="home" class="header">
     <div class="container">
         <div class="header-top">
@@ -56,7 +56,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <h2 class="tittle" id="bookstore_welcome">Welcome</h2>
         </div>
     </div>
-    <div class="about two">
+    <div class="about two myBody">
         <div class="container">
             <h3 class="tittle" id="myEntityTittle">权限管理</h3>
         </div>
@@ -107,6 +107,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </div>
 
 <script type="text/javascript">
+    var urlTitle = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
+
     jQuery(document).ready(function($) {
         $('#multiselect').multiselect();
     });
@@ -115,7 +117,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var arg = $("#searchWhat").val();
         var searchType = $("#searchMethod option:selected").val();
 
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.";
+        var myurl = urlTitle+"User/?User.";
         if (searchType == "name") {
             myurl += "name=(like)" + arg;
         }
@@ -165,7 +167,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         for (var i = 0; i < newReviewers.length; i++) {
             $.ajax({
                 async:false,
-                url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.id="+newReviewers[i],
+                url: urlTitle+"User/?User.id="+newReviewers[i],
                 type: "GET",
                 success: function (data) {
                     var obj = eval(data);
@@ -178,7 +180,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     userInfo.check = checks;
 
                     $.ajax({
-                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/"+userInfo.id,
+                        url: urlTitle+"User/"+userInfo.id,
                         contentType: "application/json",
                         type: "PUT",
                         data: JSON.stringify(userInfo),
@@ -193,7 +195,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         for (var i = 0; i < newWriters.length; i++) {
             $.ajax({
                 async:false,
-                url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.id="+newWriters[i],
+                url: urlTitle+"User/?User.id="+newWriters[i],
                 type: "GET",
                 success: function (data) {
                     var obj = eval(data);
@@ -208,7 +210,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     console.log(userInfo);
 
                     $.ajax({
-                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/"+userInfo.id,
+                        url: urlTitle+"User/"+userInfo.id,
                         contentType: "application/json",
                         type: "PUT",
                         data: JSON.stringify(userInfo),

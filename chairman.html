@@ -14,8 +14,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <script src="js/bootstrap.min.js"> </script>
     <script src="js/multiselect.min.js"></script>
 </head>
-<body>
-<div id="home" class="header">
+<body class="myBody">
+<div id="home" class="header myBody">
     <div class="container">
         <div class="header-top">
             <div class="logo">
@@ -57,7 +57,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         </div>
     </div>
-    <div class="about two">
+    <div class="about two myBody">
         <div class="container">
             <h3 class="tittle" id="myEntityTittle">分配任务</h3>
             <div class="about-top">
@@ -121,13 +121,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script type="text/javascript">
     var users = new Array();
     var fuzzyUsers = new Array();
+    var urlTitle = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
 
     $(document).ready(function(){
         console.log("hello");
         $('#multiselect').multiselect();
         $("#content").html('');
         $.ajax({
-            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.status=Delivered",
+            url: urlTitle+"Paper/?Paper.status=Delivered",
             type: "GET",
             success: function (data) {
                 var obj = eval(data);
@@ -146,7 +147,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var paperMsg = "作者: " + paper.author + "  提交时间: " + paper.submittime + "  关键词: ";
 
         $.ajax({
-            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Keywords/?Keywords.match.id="+paper.id,
+            url: urlTitle+"Keywords/?Keywords.match.id="+paper.id,
             type: "GET",
             async: false,
             success: function (keywordsdata) {
@@ -190,7 +191,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         $.ajax({
             async:false,
-            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.role=reviewer",
+            url: urlTitle+"User/?User.role=reviewer",
             type: "GET",
             success: function (usersret) {
                 var obj = eval(usersret);
@@ -204,7 +205,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         console.log("no feature");
                         continue;
                     }
-                    var keyUrl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Keywords/?Keywords.match.id="
+                    var keyUrl = urlTitle+"Keywords/?Keywords.match.id="
                             +paperID + "&Keywords.word=(like)"+fuzzyUsers[i].feature;
                     console.log(keyUrl);
                     $.ajax({
@@ -250,7 +251,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         console.log(paperID);
         $.ajax({
-            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/?Paper.id=" + paperID,
+            url: urlTitle+"Paper/?Paper.id=" + paperID,
             type: "GET",
             success: function (oldpaperdata) {
                 var oldPaper = eval(oldpaperdata).Paper[0];
@@ -258,7 +259,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 oldPaper.status = "FirstTrial";
                 console.log(oldPaper);
                 $.ajax({
-                    url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Paper/"+paperID,
+                    url: urlTitle+"Paper/"+paperID,
                     contentType: "application/json",
                     type: "PUT",
                     data: JSON.stringify(oldPaper),
@@ -273,7 +274,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             //
             $.ajax({
                 async:false,
-                url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/"+usersID[i],
+                url: urlTitle+"User/"+usersID[i],
                 type: "GET",
                 success: function (data) {
                     var obj = eval(data);
@@ -287,7 +288,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     userInfo.check = checks;
 
                     $.ajax({
-                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/"+userInfo.id,
+                        url: urlTitle+"User/"+userInfo.id,
                         contentType: "application/json",
                         type: "PUT",
                         data: JSON.stringify(userInfo),
@@ -306,7 +307,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     function searchReviewer() {
         var sname = $("#searchUserInput").val();
         $.ajax({
-            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/?User.name=(like)"+sname+"&User.role=reviewer",
+            url: urlTitle+"User/?User.name=(like)"+sname+"&User.role=reviewer",
             type:"GET",
             success:function (userList) {
                 userList = eval(userList);
@@ -333,5 +334,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         })
     }
 
+    function showPaperClick(paperId){
+        window.open( "viewPaper.html?pid=" + paperId, "", "top=150, left=250, width=1400, height=800");
+    }
 </script>
 </html>

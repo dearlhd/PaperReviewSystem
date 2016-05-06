@@ -14,7 +14,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <script src="js/jquery-2.2.3.min.js" type="text/javascript"></script>
     <script src="js/bootstrap.min.js"> </script>
 </head>
-<body>
+<body class="myBody">
 <!--start-home-->
 <div id="home" class="header">
     <div class="container">
@@ -55,7 +55,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <h2 class="tittle" id="bookstore_welcome">Welcome</h2>
         </div>
     </div>
-    <div class="about two">
+    <div class="about two myBody">
         <div class="container">
             <h3 class="tittle" id="myEntityTittle">审阅论文</h3>
             <a href="#" onclick="unReviewPage()" class="tittle">待审阅</a> &nbsp;/&nbsp;
@@ -139,6 +139,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </div>
 
 <script type="text/javascript">
+    var urlTitle = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/";
+
     $(document).ready(function(){
         unReviewPage();
     })
@@ -149,7 +151,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var paperMsg = "作者: " + paper.author + "  提交时间: " + paper.submittime + "  关键词: ";
 
         $.ajax({
-            url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Keywords/?Keywords.match.id="+paper.id,
+            url: urlTitle+"Keywords/?Keywords.match.id="+paper.id,
             type: "GET",
             async: false,
             success: function (keywordsdata) {
@@ -184,6 +186,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             }
         });
     }
+
 </script>
 
 <script type="text/javascript">
@@ -194,7 +197,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var username = localStorage.getItem("name");
         var role = localStorage.getItem("role");
 
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
+        var myurl = urlTitle+"User/";
         myurl = myurl + "?User.name="+username;
 
         $("#unReview").html('');
@@ -212,7 +215,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     if (papers[i].status != "FirstTrial") {
                         continue;
                     }
-                    myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
+                    myurl = urlTitle+"Comment/?Comment.reviewer="+username;
                     myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
                     $.ajax({
                         url: myurl,
@@ -238,7 +241,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var username = localStorage.getItem("name");
         var role = localStorage.getItem("role");
 
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
+        var myurl = urlTitle+"User/";
         myurl = myurl + "?User.name="+username;
 
         $("#reviewedNew").html('');
@@ -252,7 +255,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 var papers = obj.User[0].check;
                 var color = 0;
                 for (var i = 0; i < papers.length; i++) {
-                    myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
+                    myurl = urlTitle+"Comment/?Comment.reviewer="+username;
                     myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
                     $.ajax({
                         url: myurl,
@@ -298,7 +301,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         var username = localStorage.getItem("name");
         var role = localStorage.getItem("role");
 
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
+        var myurl = urlTitle+"User/";
         myurl = myurl + "?User.name="+username;
 
         $("#reviewed").html('');
@@ -312,7 +315,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 var papers = obj.User[0].check;
                 var color = 0;
                 for (var i = 0; i < papers.length; i++) {
-                    myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/Comment/?Comment.reviewer="+username;
+                    myurl = urlTitle+"Comment/?Comment.reviewer="+username;
                     myurl = myurl + "&Comment.commentwhat.id="+papers[i].id;
                     $.ajax({
                         url: myurl,
@@ -429,6 +432,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 "advice":advice,
                                 "confidence":confidence,
                                 "edittime":edittime,
+                                "suggest":suggestion,
                                 "commentwhat":{"id":paperID, "type":"Paper"},
                                 "whocomment":{"id":userid, "type":"User"}
                             }
@@ -480,6 +484,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         unReviewPage();
     }
 
+    function showPaperClick(paperId){
+        window.open( "viewPaper.html?pid=" + paperId, "", "top=150, left=250, width=1400, height=800");
+    }
 
 </script>
 </body>
