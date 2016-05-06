@@ -126,6 +126,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     $(document).ready(function(){
         console.log("hello");
         $('#multiselect').multiselect();
+        showPage();
+    })
+
+    function showPage() {
         $("#content").html('');
         $.ajax({
             url: urlTitle+"Paper/?Paper.status=Delivered",
@@ -138,8 +142,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 }
             }
         });
-
-    })
+    }
 
     function showPaperInfo(paper, flag) {
         var content = '';
@@ -256,10 +259,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             type: "GET",
             success: function (oldpaperdata) {
                 var oldPaper = eval(oldpaperdata).Paper[0];
-                console.log(oldPaper);
                 oldPaper.status = "FirstTrial";
-                console.log(oldPaper);
                 $.ajax({
+                    async:false,
                     url: urlTitle+"Paper/"+paperID,
                     contentType: "application/json",
                     type: "PUT",
@@ -303,6 +305,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         $("#myModal").modal('hide');
         $("#paper"+paperID).hide();
+        showPage();
     }
 
     function searchReviewer() {
