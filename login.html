@@ -81,6 +81,8 @@
 </div>
 
 <script type = "text/javascript">
+    var urlTitle = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperCheck/";
+
     function register() {
         var uname = document.getElementById('usernamesignup').value;
         var psw = document.getElementById('passwordsignup').value;
@@ -97,7 +99,7 @@
             return false;
         }
 
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
+        var myurl = urlTitle+"User/";
         myurl = myurl + "?User.name="+uname;
 
         $.ajax({
@@ -119,7 +121,7 @@
                     } ;
 
                     $.ajax({
-                        url: "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/",
+                        url: urlTitle+"User/",
                         contentType: "application/json",
                         type: "POST",
                         data: JSON.stringify(userInfo),
@@ -146,7 +148,7 @@
             return false;
         }
 
-        var myurl = "http://202.120.40.73:28080/Entity/Ubfca480238c858/PaperRev/User/";
+        var myurl = urlTitle+"User/";
         myurl = myurl + "?User.name="+uname;
         myurl = myurl + "&User.password="+psw;
 
