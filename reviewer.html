@@ -284,6 +284,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                     }
                                 }
 
+                                if (cTimes[0]+cTimes[1]+cTimes[2] == pTimes[0]+pTimes[1]+pTimes[2]) {
+                                    f = 1;
+                                }
+
                                 if (f == -1) {
                                     showPaperInfo(papers[i], color, "#reviewedNew");
                                     color++;
@@ -333,6 +337,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 var paperTime = papers[i].edittime;
                                 var pTimes = paperTime.split("-");
 
+                                console.log(cTimes);
+                                console.log(pTimes);
+
                                 var f = 1;
                                 for (var j = 0; j < 3; j++) {
                                     if (cTimes[j]+pTimes[j] < pTimes[j]+cTimes[j]) {
@@ -343,6 +350,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                         f = 1;
                                         break;
                                     }
+                                }
+
+                                if (cTimes[0]+cTimes[1]+cTimes[2] == pTimes[0]+pTimes[1]+pTimes[2]) {
+                                    f = 1;
                                 }
 
                                 if (f == 1) {
@@ -369,12 +380,27 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     }
 
     function addAdviceClick(paperID) {
-        var footer =  '\
+        console.log(paperID);
+        $.ajax({
+            async:false,
+            url : urlTitle + "Paper/?Paper.id=" + paperID,
+            type : "GET",
+            success:function (msg) {
+                var msg = eval(msg);
+                if (msg.Paper[0].status != 'FirstTrial') {
+                    sweetAlert("","此阶段无法再对评论进行修改","warning");
+                    return false;
+                }
+                else {
+                    var footer =  '\
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>\
                     <button type="button" class="btn btn-primary" onclick="addAdvice('+paperID+')">提交</button>';
-        $("#modal-footer").html(footer);
+                    $("#modal-footer").html(footer);
 
-        $("#myModal").modal();
+                    $("#myModal").modal();
+                }
+            }
+        });
     }
 
     function addAdvice(paperID) {
@@ -406,23 +432,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         oldcomment = oldcomment[0];
                     }
                     console.log(oldcomment);
-                    oldcomment.commentwhat = {"id":paperID, "type":"Paper"};
+
+                    oldcomment[0].advice = advice;
+                    oldcomment[0].confidence = confidence;
+                    oldcomment[0].suggest = suggestion;
+
                     console.log(oldcomment);
-                    var uid = oldcomment.whocomment.id;
-                    oldcomment.whocomment = {"id": uid, "type":"User"};
-                    oldcomment.advice = advice;
-                    oldcomment.confidence = confidence;
-                    oldcomment.suggest = suggestion;
                     var nowDate = new Date();
-                    oldcomment.edittime = nowDate.getFullYear() + "-" + nowDate.getMonth() + "-" + nowDate.getDate();
+                    oldcomment[0].edittime = nowDate.getFullYear() + "-" + (nowDate.getMonth()+1) + "-" + nowDate.getDate();
 
                     $.ajax({
-                        url: urlTitle+"Comment/"+oldcomment.id,
+                        url: urlTitle+"Comment/"+oldcomment[0].id,
                         contentType: "application/json",
                         type: "PUT",
-                        data: JSON.stringify(oldcomment),
+                        data: JSON.stringify(oldcomment[0]),
                         success: function (commentD) {
-
+                            unReviewPage();
                         }
                     });
                     return;
@@ -431,7 +456,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     var myurl = urlTitle+"User/?User.name="+username;
                     var userid;
                     var nowDate = new Date();
-                    var edittime = nowDate.getFullYear() + "-" + nowDate.getMonth() + "-" + nowDate.getDate();
+                    var edittime = nowDate.getFullYear() + "-" + (nowDate.getMonth()+1) + "-" + nowDate.getDate();
                     $.ajax({
                         url: myurl,
                         type: "GET",
@@ -456,7 +481,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 data: JSON.stringify(comment),
                                 success: function (data) {
                                     var obj = eval(data);
-
+                                    unReviewPage();
                                     // 评论数量达到3个时送至终审
                                     $.ajax({
                                         url: urlTitle+"Comment/?Comment.commentwhat.id="+paperID,
@@ -493,7 +518,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         });
 
         $("#myModal").modal("hide");
-        unReviewPage();
+
     }
 
     function showPaperClick(paperId){

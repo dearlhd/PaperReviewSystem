@@ -161,6 +161,38 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             newWriters[i] = newWriterList[i].value;
         }
 
+        var hasPaperToReview = 0;
+        for (var i = 0; i < newWriters.length; i++) {
+            $.ajax({
+                async:false,
+                url:urlTitle+"User/?User.id="+newWriters[i],
+                type:"GET",
+                success:function (writersData) {
+                    writersData = eval(writersData);
+                    var testWriters = writersData.User[0];
+                    var toCheck = testWriters.check;
+                    console.log("to check");
+                    console.log(toCheck);
+                    if (!jQuery.isEmptyObject(toCheck)) {
+                        return;
+                    }
+                    else {
+                        for (var j = 0; j < toCheck.length; j++) {
+                            if (toCheck[j].status == "FirstTrial") {
+                                hasPaperToReview = 1;
+                                return;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        if (hasPaperToReview == 1) {
+            sweetAlert("", "被选中的审稿人还有论文待审批，请重新选择", "warning");
+            return;
+        }
+
+
         console.log(newReviewers);
         console.log(newWriters);
 

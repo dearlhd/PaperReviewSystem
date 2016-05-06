@@ -60,7 +60,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <h3 class="tittle" id="myEntityTittle">终审</h3>
             <div class="about-top">
                 <div class="col-md-9 about-text" id="my_Content">
-                    <div class="contact" id="finalJudgement">
+                    <div id="finalJudgement">
 
                     </div>
                 </div>
@@ -160,7 +160,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 </div>\
                                 <div>\
                                     <textarea class="myTextArea_Title" style="height:0px;" readonly="readonly"></textarea>\
-                                    <input type="button" class="myImgButton_modify" onclick="addAdviceClick('+paper.id+')">\
+                                    <input type="button" class="myImgButton_modify" onclick="judgeClick('+paper.id+')">\
                                     <input type="button" class="myImgButton_comment" onclick="checkAdviceClick('+paper.id+')">\
                                 </div>\
                                 <textarea class="myTextArea_Content" readonly="readonly">'+paperMsg+'</textarea>\
@@ -260,6 +260,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     function finalJudge(paperID,tag) {
         console.log("final");
         console.log(tag);
+        $("#modalTip").html("是否通过审批？");
+        $("#modalContent").html('');
+
         var myurl = urlTitle+"Paper/?Paper.id="+paperID;
         $.ajax({
             url: myurl,
@@ -274,11 +277,17 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 }
                 console.log(oldPaper);
                 $.ajax({
+                    async:false,
                     url: urlTitle+"Paper/"+paperID,
                     contentType: "application/json",
                     type: "PUT",
                     data: JSON.stringify(oldPaper),
                     success: function (newpaper) {
+                        if (oldPaper.status == "Failed") {
+                            return;
+                        }
+
+                        console.log("before archive");
                         archivePaper(oldPaper.id);
                         var tagContent = '<input type="text" class="form-control" id="tags" placeholder="请输入标签，以；隔开">';
                         var footer = '<button type="button" class="btn btn-default" data-dismiss="modal">close</button>\

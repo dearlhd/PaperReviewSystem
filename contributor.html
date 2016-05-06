@@ -129,7 +129,19 @@
   }
 
   function ModifyPaperClick(obj){
-    window.location.href = "contributorModify.html?pid=" + obj;
+    $.ajax({
+      url : myurl + "Paper/?Paper.id=" + obj,
+      type : "GET",
+      success:function (msg) {
+          var msg = eval(msg);
+          if (msg.Paper[0].status == 'FirstTrial' || msg.Paper[0].status == 'Delivered') {
+            window.location.href = "contributorModify.html?pid=" + obj;
+          }
+          else {
+              sweetAlert("","此阶段无法再对论文进行修改","warning");
+          }
+      }
+    });
   }
 
   function AdvicePaperClick(obj){
