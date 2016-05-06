@@ -13,6 +13,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <script src="js/jquery-2.2.3.min.js" type="text/javascript"></script>
     <script src="js/bootstrap.min.js"> </script>
     <script src="js/multiselect.min.js"></script>
+
+    <script src="js/sweet-alert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
 </head>
 <body class="myBody">
 <div id="home" class="header myBody">
@@ -244,9 +247,17 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     }
 
     function distribute(paperID) {
-
         var selectedUser=document.getElementById("multiselect_to").childNodes;
         var usersID = new Array();
+
+        if (selectedUser.length < 3) {
+            sweetAlert("", "请选择至少三位审稿人！", "warning");
+            return;
+        }
+        else if (selectedUser.length > 5) {
+            sweetAlert("", "至多选择五位审稿人！", "warning");
+            return;
+        }
 
         for (var i = 0; i < selectedUser.length; i++) {
             usersID[i] = selectedUser[i].value;
