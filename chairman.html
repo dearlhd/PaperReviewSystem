@@ -251,6 +251,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         console.log(paperID);
         $.ajax({
+            async:false,
             url: urlTitle+"Paper/?Paper.id=" + paperID,
             type: "GET",
             success: function (oldpaperdata) {
