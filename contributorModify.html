@@ -133,7 +133,7 @@
     var edittime = myDate.getFullYear() + "-" + myDate.getMonth() + "-" + myDate.getDate();
     paperId = my_obj.Paper[0].id;
     var status = "Delivered";
-    if ((title.length > 0) && (unit.length > 0) && (address.length > 0) && (summary.length > 0) && (keywords.length > 0) && (content.val() != ""))
+    if ((title.length > 0) && (unit.length > 0) && (address.length > 0) && (summary.length > 0) && (keywords.length > 0))
     {
       $.ajax({
         url: myurl + "Keywords/?Keywords.match.id=" + paperId,
@@ -175,19 +175,21 @@
         success: function(msg){
           var obj = eval(msg);
           var paperId = obj.id;
-          var files = $(":file")[0].files;
-          var formData = new FormData();
-          formData.append("file", files[0]);
-          $.ajax({
-            url: myurl + "Paper/" + paperId,
-            type: "POST",
-            data: formData,
-            async : false,
-            contentType: false,
-            processData: false,
-            success: function(data){
-            } 
-          });
+          if (content.val() != ""){
+            var files = $(":file")[0].files;
+            var formData = new FormData();
+            formData.append("file", files[0]);
+            $.ajax({
+              url: myurl + "Paper/" + paperId,
+              type: "POST",
+              data: formData,
+              async : false,
+              contentType: false,
+              processData: false,
+              success: function(data){
+              } 
+            });
+          }
 
           var keylist = keywords.split(";");              
           for (var i = 0; i < keylist.length; ++i){

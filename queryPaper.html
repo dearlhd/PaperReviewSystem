@@ -125,6 +125,7 @@
     var layout = "";
     var PaperMsg = "";
 
+    PaperMsg = ("作者: " + obj.author + "  提交时间: " + obj.submittime);
     $.ajax({
       url: myurl + "Keywords/?Keywords.match.id=" + obj.id,
       type : "GET",
@@ -135,7 +136,7 @@
           return false;
         }
         var k = _obj.Keywords.length;
-        PaperMsg = ("作者: " + obj.author + "  提交时间: " + obj.submittime + "  关键词: ");
+        PaperMsg += "  关键词: ";
         for (var j = 0; j < k; ++j) {
           PaperMsg += (_obj.Keywords[j].word + " ");
         }
@@ -172,11 +173,12 @@
       {
         case "关键词" :
           $.ajax({
-            url : myurl + "Keywords/?Keywords.word=" + $("#search").val(),
+            url : myurl + "Keywords/?Keywords.word=(like)" + $("#search").val(),
             type : "GET",
             success : function(msg){
               var obj = eval(msg);
               if (jQuery.isEmptyObject(obj)){
+                $("#my_Content").html(demo_Contenthead + "啊哦,没有找到已发布的相关论文哦 :(" + demo_tail);
                 return false;
               }
               var keywords_array = new Array();
@@ -216,11 +218,12 @@
           break;
         case "标签" :
           $.ajax({
-            url : myurl + "Tags/?Tags.word=" + $("#search").val(),
+            url : myurl + "Tags/?Tags.word=(like)" + $("#search").val(),
             type : "GET",
             success : function(msg){
               var obj = eval(msg);
               if (jQuery.isEmptyObject(obj)){
+                $("#my_Content").html(demo_Contenthead + "啊哦,没有找到已发布的相关论文哦 :(" + demo_tail);
                 return false;
               }
               var tags_array = new Array();
@@ -259,11 +262,12 @@
           break;
         case "作者" :
           $.ajax({
-            url : myurl + "Paper/?Paper.author=" + $("#search").val() + "&Paper.status=Passed",
+            url : myurl + "Paper/?Paper.author=(like)" + $("#search").val() + "&Paper.status=Passed",
             type : "GET",
             success : function(msg){
               var obj = eval(msg);
               if (jQuery.isEmptyObject(obj)){
+                $("#my_Content").html(demo_Contenthead + "啊哦,没有找到已发布的相关论文哦 :(" + demo_tail);
                 return false;
               }
               for (var i = 0; i < obj.Paper.length; ++i){
@@ -279,6 +283,7 @@
             success : function(msg){
               var obj = eval(msg);
               if (jQuery.isEmptyObject(obj)){
+                $("#my_Content").html(demo_Contenthead + "啊哦,没有找到已发布的相关论文哦 :(" + demo_tail);
                 return false;
               }
               for (var i = 0; i < obj.Paper.length; ++i){
@@ -294,6 +299,7 @@
             success : function(msg){
               var obj = eval(msg);
               if (jQuery.isEmptyObject(obj)){
+                $("#my_Content").html(demo_Contenthead + "啊哦,没有找到已发布的相关论文哦 :(" + demo_tail);
                 return false;
               }
               for (var i = 0; i < obj.Paper.length; ++i){
